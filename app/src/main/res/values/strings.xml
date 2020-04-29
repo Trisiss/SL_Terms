@@ -8,7 +8,7 @@
     <string name="answerTwo">answerTwo</string>
     <string name="answerOne">answerOne</string>
     <string name="question">question</string>
-    <item name="action_test" type="id">Пройти тест</item>
+    <string name="action_test" type="id">Пройти тест</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
