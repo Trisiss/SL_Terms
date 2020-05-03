@@ -8,11 +8,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.*
-import android.support.annotation.RequiresApi
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.SearchView
+import androidx.annotation.RequiresApi
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -238,7 +238,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
         if (null != searchManager) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         }
-        val searchPlate = searchView.findViewById<View>(android.support.v7.appcompat.R.id.search_src_text) as EditText
+        val searchPlate = searchView.findViewById<View>(androidx.appcompat.appcompat.R.id.search_src_text) as EditText
         searchPlate.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchTerms(searchPlate.text.toString())
