@@ -49,15 +49,15 @@ class CheckInActivity : AppCompatActivity() {
 
     fun addListenerOnButton() { // radioGroup = (RadioGroup) findViewById(R.id.radiogroup);
         myButton = findViewById<View>(R.id.button2) as Button
-        val editText = findViewById<View>(R.id.editText) as EditText
+        val selectUser = findViewById<View>(R.id.selectUser) as Spinner
         myButton!!.setOnClickListener {
             val rgp1 = findViewById<View>(R.id.radiogroup) as RadioGroup
             var selectedId = 0
             selectedId = rgp1.checkedRadioButtonId
             val numberAsString = Integer.toString(selectedId)
-            if (editText.text.toString() == "") {
+            if (selectUser.prompt.toString() == "") {
             } else if (selectedId != -1) {
-                val id_student: Int = BusinessLogicTest.blt?.startTest(editText.text.toString())!!
+                val id_student: Int = BusinessLogicTest.blt?.startTest(selectUser.prompt.toString())!!
                 val id_studentS = Integer.toString(id_student)
                 rbn1 = findViewById<View>(selectedId) as RadioButton
                 val intent = Intent(this@CheckInActivity, TestActivity::class.java)
