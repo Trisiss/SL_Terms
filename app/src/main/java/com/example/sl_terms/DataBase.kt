@@ -1,5 +1,6 @@
 package com.example.sl_terms
 
+import com.example.sl_terms.models.TermRecord
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject

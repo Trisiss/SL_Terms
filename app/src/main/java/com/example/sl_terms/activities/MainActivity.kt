@@ -1,4 +1,4 @@
-package com.example.sl_terms
+package com.example.sl_terms.activities
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -24,7 +24,10 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.example.sl_terms.MainActivity
+import com.example.sl_terms.BusinessLogic
+import com.example.sl_terms.DataBase
+import com.example.sl_terms.R
+import com.example.sl_terms.models.TermRecord
 import org.json.JSONObject
 import java.io.File
 import java.net.URLDecoder
@@ -32,6 +35,7 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity(), OnRefreshListener {
+
     private var mWebView: WebView? = null
     private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     private var bl: BusinessLogic? = null
@@ -43,47 +47,47 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
         fun loadHref(url: String) {
             if (url.contains("://")) {
                 runOnUiThread {
-                    val my_image_storage_dir = filesDir.path
-                    val my_3D_models_storage_dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
+                    val myImageStorageDir = filesDir.path
+                    val my3dModelsStorageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
                     Log.d("MY_URL", url)
-                    var decode_url: String? = ""
+                    var decodeUrl: String? = ""
                     try {
-                        decode_url = URLDecoder.decode(url, "UTF-8")
-                        Log.d("MY_DECODE_URL", decode_url)
+                        decodeUrl = URLDecoder.decode(url, "UTF-8")
+                        Log.d("MY_DECODE_URL", decodeUrl)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
                     var matcher: Matcher
                     var name = ""
-                    matcher = Pattern.compile("([^/]+)[.]").matcher(decode_url)
+                    matcher = Pattern.compile("([^/]+)[.]").matcher(decodeUrl)
                     while (matcher.find()) name = matcher.group(1)
                     Log.d("MY_NAME", name)
                     var full_name = ""
-                    matcher = Pattern.compile("([^/]+)").matcher(decode_url)
+                    matcher = Pattern.compile("([^/]+)").matcher(decodeUrl)
                     while (matcher.find()) full_name = matcher.group(1)
                     Log.d("MY_FULL_NAME", full_name)
                     if (url.contains("/Image/")) {
                         name = name.toLowerCase() + ".jpg"
-                        val imageFile = File("$my_image_storage_dir/$name")
+                        val imageFile = File("$myImageStorageDir/$name")
                         if (imageFile.exists()) { //mWebView.loadUrl("file://" + my_image_storage_dir + "/" + name);
                             val imgData = "<img src=$name>"
-                            mWebView!!.loadDataWithBaseURL("file://$my_image_storage_dir/",
+                            mWebView!!.loadDataWithBaseURL("file://$myImageStorageDir/",
                                     imgData, "text/html", "utf-8", null)
                             Log.d("MY_IMAGE", "IS EXISTS")
                         } else {
                             var success = 0
                             try {
-                                val imageJSON = JSONObject(db!!.getResponse(DataBase.Companion.GET_SEARCH_IMAGE_JSON + full_name))
+                                val imageJSON = JSONObject(db!!.getResponse(DataBase.GET_SEARCH_IMAGE_JSON + full_name))
                                 success = imageJSON.getInt("success")
                                 Log.d("MY_SUCCESS", "" + success)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
                             if (success == 1) {
-                                bl!!.loadImage(DataBase.Companion.GET_SEARCH_IMAGE + full_name, name)
+                                bl!!.loadImage(DataBase.GET_SEARCH_IMAGE + full_name, name)
                                 //mWebView.loadUrl("file://" + my_image_storage_dir + "/" + name);
                                 val imgData = "<img src=$name>"
-                                mWebView!!.loadDataWithBaseURL("file://$my_image_storage_dir/",
+                                mWebView!!.loadDataWithBaseURL("file://$myImageStorageDir/",
                                         imgData, "text/html", "utf-8", null)
                                 showToast("Изображение кэшировано")
                             } else {
@@ -93,22 +97,22 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                         }
                     } else if (url.contains("/3D/")) {
                         name = name.toLowerCase() + ".stp"
-                        val BinaryFile = File("$my_3D_models_storage_dir/$name")
+                        val BinaryFile = File("$my3dModelsStorageDir/$name")
                         if (BinaryFile.exists()) {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("file://$my_3D_models_storage_dir/$name"))
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("file://$my3dModelsStorageDir/$name"))
                             startActivity(intent)
                         } else {
                             var success = 0
                             try {
                                 showToast(full_name)
-                                val BinaryJSON = JSONObject(db!!.getResponse(DataBase.Companion.GET_SEARCH_IMAGE_JSON + full_name))
+                                val BinaryJSON = JSONObject(db!!.getResponse(DataBase.GET_SEARCH_IMAGE_JSON + full_name))
                                 success = BinaryJSON.getInt("success")
                                 Log.d("MY_SUCCESS", "" + success)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
                             if (success == 1) {
-                                bl!!.loadBinary(DataBase.Companion.GET_SEARCH_IMAGE + full_name, name)
+                                bl!!.loadBinary(DataBase.GET_SEARCH_IMAGE + full_name, name)
                                 showToast("Модель кэширована")
                             } else {
                                 showToast("Модель не загружена в БД")
@@ -321,7 +325,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                     if (lastURL!!.contains(".stp")) name = name.toLowerCase() + ".stp"
                     var success = 0
                     try {
-                        val imageJSON = JSONObject(db!!.getResponse(DataBase.Companion.GET_SEARCH_IMAGE_JSON + full_name))
+                        val imageJSON = JSONObject(db!!.getResponse(DataBase.GET_SEARCH_IMAGE_JSON + full_name))
                         success = imageJSON.getInt("success")
                         Log.d("MY_SUCCESS", "" + success)
                     } catch (e: Exception) {
@@ -329,7 +333,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                     }
                     if (success == 1) {
                         if (lastURL!!.contains(".jpg")) {
-                            bl!!.loadImage(DataBase.Companion.GET_SEARCH_IMAGE + full_name, name)
+                            bl!!.loadImage(DataBase.GET_SEARCH_IMAGE + full_name, name)
                             //mWebView.loadUrl("file://" + getFilesDir().getPath() + "/" + name);
                             val imgData = "<img src=$name>"
                             mWebView!!.loadDataWithBaseURL("file://" + filesDir.path + "/",
@@ -350,6 +354,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
         }, 2000)
     }
 
+    @SuppressLint("StaticFieldLeak")
     private inner class LoadAllTerms : AsyncTask<Void?, Int?, Void?>() {
         private var currentMax = 0
         private val mHorizontalProgressBar = findViewById<View>(R.id.horizontalProgressBar) as ProgressBar
@@ -372,7 +377,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
             stage = 1
             progressCount = 0
             try {
-                val imagesJSON = JSONObject(db!!.getResponse(DataBase.Companion.GET_IMAGES))
+                val imagesJSON = JSONObject(db!!.getResponse(DataBase.GET_IMAGES))
                 val success = imagesJSON.getInt("success")
                 if (success == 1) {
                     val num_images = imagesJSON.getInt("number")
@@ -384,7 +389,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                         val matcher = Pattern.compile("([^/]+)[.]").matcher(urlForSearch)
                         while (matcher.find()) name = matcher.group(1)
                         name = name.toLowerCase() + ".jpg"
-                        bl!!.loadImage(DataBase.Companion.GET_SEARCH_IMAGE + urlForSearch, name)
+                        bl!!.loadImage(DataBase.GET_SEARCH_IMAGE + urlForSearch, name)
                     }
                 }
             } catch (e: Exception) {

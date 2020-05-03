@@ -1,5 +1,7 @@
 package com.example.sl_terms
 
+import com.example.sl_terms.models.AvailableTest
+
 class BusinessLogicTest {
     //переменная хранящая id теста
     private val id_test = 0
@@ -39,7 +41,7 @@ class BusinessLogicTest {
         System.out.println("000000000");*/
 /*  return ID_questions[question].name;
     }*/
-        fun /*@@uyqzrn@@*/getIdQuestions(ID:/*@@cczlef@@*/Int): /*@@logjic@@*/Array<AvailableTest> {
+        fun getIdQuestions(ID:Int): Array<AvailableTest> {
             ID_questions = dataBaseTest.getIdQuestion(ID)
             for (i in ID_questions.indices) {
                 ID_questions.get(i).name = dataBaseTest.getTextQuestion(ID_questions.get(i).id).get(0).name
@@ -53,41 +55,41 @@ class BusinessLogicTest {
         }
 
         //получить текст вопроса
-        fun /*@@ivcogm@@*/getCurQuestionText(): /*@@dylrnq@@*/kotlin.Unit {}
+        fun getCurQuestionText(): kotlin.Unit {}
 
         //получить варианты ответа
-        fun /*@@iuflfi@@*/getIdVariantVariantName(idQuestion:/*@@cczlef@@*/Int): /*@@logjic@@*/Array<AvailableTest> {
+        fun getIdVariantVariantName(idQuestion:Int): Array<AvailableTest> {
             IdVariantVariantName = dataBaseTest.geIdVariantVariantName(idQuestion)
             return IdVariantVariantName
         }
 
         //передать ответ студента на сервер
-        fun /*@@emfahr@@*/answerToCurQuestion(id_student:/*@@cczlef@@*/Int, id_question:/*@@cczlef@@*/Int, id_variant:/*@@cczlef@@*/Int, id_session:/*@@cczlef@@*/Int): /*@@dylrnq@@*/kotlin.Unit {
+        fun answerToCurQuestion(id_student:Int, id_question:Int, id_variant:Int, id_session:Int): kotlin.Unit {
             dataBaseTest.answerToCurQuestion(id_student, id_question, id_variant, id_session)
         }
 
         //следующий вопрос
-        fun /*@@vrwcxc@@*/nextQuestion(): /*@@cczlef@@*/Int {
+        fun nextQuestion(): Int {
             countQuestion++
             return countQuestion
         }
 
         //получить количество правильных ответов
-        fun /*@@suhlas@@*/numberOfCorrectAnswers(id_student:/*@@cczlef@@*/Int): /*@@cczlef@@*/Int {
+        fun numberOfCorrectAnswers(id_student:Int): Int {
             return dataBaseTest.numberOfCorrectAnswers(id_student)
         }
 
-        fun /*@@ksxluc@@*/getPicture(idQuestion:/*@@cczlef@@*/Int): /*@@logjic@@*/Array<AvailableTest> {
+        fun getPicture(idQuestion:Int): Array<AvailableTest> {
             Picture = dataBaseTest.getPicture(idQuestion)
             return Picture
         }
 
-        fun /*@@mnujlk@@*/getPictureNull(idQuestion:/*@@cczlef@@*/Int): /*@@logjic@@*/Array<AvailableTest> {
+        fun getPictureNull(idQuestion:Int): Array<AvailableTest> {
             Picture = dataBaseTest.getPictureNull(idQuestion)
             return Picture
         }
 
     companion object  {
-        var  blt:/*@@amfudr@@*/BusinessLogicTest? = BusinessLogicTest()
+        var  blt:BusinessLogicTest? = BusinessLogicTest()
     }
 }

@@ -1,4 +1,4 @@
-package com.example.sl_terms
+package com.example.sl_terms.activities
 
 import android.Manifest.permission
 import android.animation.Animator
@@ -24,7 +24,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView.OnEditorActionListener
-import com.example.sl_terms.LoginActivity
+import com.example.sl_terms.R
 import java.util.*
 
 /**

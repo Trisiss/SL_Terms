@@ -1,4 +1,4 @@
-package com.example.sl_terms
+package com.example.sl_terms.models
 
 data class TermRecord (
     var id: Int = 0,

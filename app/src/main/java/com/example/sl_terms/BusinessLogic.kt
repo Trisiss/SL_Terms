@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.os.Environment
 import android.provider.BaseColumns
 import android.util.Log
+import com.example.sl_terms.models.TermRecord
 import java.io.*
 import java.net.URL
 import java.util.*

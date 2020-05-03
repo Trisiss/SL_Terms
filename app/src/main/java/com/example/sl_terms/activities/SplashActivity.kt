@@ -1,4 +1,4 @@
-package com.example.sl_terms
+package com.example.sl_terms.activities
 
 import android.app.Activity
 import android.content.Intent

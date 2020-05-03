@@ -1,4 +1,4 @@
-package com.example.sl_terms
+package com.example.sl_terms.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -10,7 +10,9 @@ import android.support.v7.widget.AppCompatRadioButton
 import android.util.Base64
 import android.view.View
 import android.widget.*
-import com.example.sl_terms.TestActivity
+import com.example.sl_terms.BusinessLogicTest
+import com.example.sl_terms.R
+import com.example.sl_terms.models.AvailableTest
 
 class TestActivity : AppCompatActivity(), View.OnClickListener {
     var myButton1: Button? = null
@@ -47,12 +49,12 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
             myButton2 = findViewById<View>(R.id.button2) as Button
             val textView = findViewById<View>(R.id.textView) as TextView
             ID_questions = BusinessLogicTest.blt!!.getIdQuestions(id_test)
-            Picture_null = BusinessLogicTest.Companion.blt!!.getPictureNull(ID_questions[0].id)
+            Picture_null = BusinessLogicTest.blt!!.getPictureNull(ID_questions[0].id)
             val result = Integer.toString(Picture_null[0].id)
             val countQuestions = ID_questions.size
             countQuestionsS = Integer.toString(countQuestions)
             textView.text = ID_questions[0].name
-            IdVariantVariantName = BusinessLogicTest.Companion.blt!!.getIdVariantVariantName(ID_questions[0].id)
+            IdVariantVariantName = BusinessLogicTest.blt!!.getIdVariantVariantName(ID_questions[0].id)
             val buttons = IdVariantVariantName.size
             val rb = arrayOfNulls<AppCompatRadioButton>(buttons)
             val rgp = findViewById<View>(R.id.radioGroup) as RadioGroup
@@ -81,26 +83,26 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
             R.id.button1 -> {
                 //перед закрытием теста отправить последний вопрос на сервер
                 val rgp2 = findViewById<View>(R.id.radioGroup) as RadioGroup
-                val countQuestion2: Int = BusinessLogicTest.Companion.blt?.nextQuestion()!!
+                val countQuestion2: Int = BusinessLogicTest.blt?.nextQuestion()!!
                 //отправляем ответ на сервер
                 val variant2 = rgp2.checkedRadioButtonId
-                BusinessLogicTest.Companion.blt!!.answerToCurQuestion(id_student, ID_questions[countQuestion2 - 1].id, variant2, id_session)
+                BusinessLogicTest.blt!!.answerToCurQuestion(id_student, ID_questions[countQuestion2 - 1].id, variant2, id_session)
                 val intent = Intent(this@TestActivity, ResultActivity::class.java)
-                numberCorrectAnswersS = Integer.toString(BusinessLogicTest.Companion.blt!!.numberOfCorrectAnswers(id_student))
+                numberCorrectAnswersS = Integer.toString(BusinessLogicTest.blt!!.numberOfCorrectAnswers(id_student))
                 intent.putExtra("numberCorrectAnswersS", numberCorrectAnswersS)
                 intent.putExtra("countQuestions", countQuestionsS)
                 startActivity(intent)
             }
             R.id.button2 -> {
                 val rgp1 = findViewById<View>(R.id.radioGroup) as RadioGroup
-                val countQuestion: Int = BusinessLogicTest.Companion.blt!!.nextQuestion()
+                val countQuestion: Int = BusinessLogicTest.blt!!.nextQuestion()
                 //отправляем ответ на сервер
                 val variant = rgp1.checkedRadioButtonId
-                BusinessLogicTest.Companion.blt!!.answerToCurQuestion(id_student, ID_questions[countQuestion - 1].id, variant, id_session)
+                BusinessLogicTest.blt!!.answerToCurQuestion(id_student, ID_questions[countQuestion - 1].id, variant, id_session)
                 //если номер вопроса равен количеству вопросов, открыть активити с результатами
                 if (countQuestion == ID_questions.size) {
                     val intent2 = Intent(this@TestActivity, ResultActivity::class.java)
-                    numberCorrectAnswersS = Integer.toString(BusinessLogicTest.Companion.blt!!.numberOfCorrectAnswers(id_student))
+                    numberCorrectAnswersS = Integer.toString(BusinessLogicTest.blt!!.numberOfCorrectAnswers(id_student))
                     intent2.putExtra("numberCorrectAnswersS", numberCorrectAnswersS)
                     intent2.putExtra("countQuestions", countQuestionsS)
                     startActivity(intent2)
@@ -109,13 +111,13 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
                 //удаляем все радио кнопки
                 rgp1.removeAllViews()
                 //переходим к следующему вопросу
-                IdVariantVariantName = BusinessLogicTest.Companion.blt!!.getIdVariantVariantName(ID_questions[countQuestion].id)
+                IdVariantVariantName = BusinessLogicTest.blt!!.getIdVariantVariantName(ID_questions[countQuestion].id)
                 val textView = findViewById<View>(R.id.textView) as TextView
                 //проверка есть ли рисунок
-                Picture_null = BusinessLogicTest.Companion.blt!!.getPictureNull(ID_questions[countQuestion].id)
+                Picture_null = BusinessLogicTest.blt!!.getPictureNull(ID_questions[countQuestion].id)
                 val result = Integer.toString(Picture_null[0].id)
                 //если рисунок есть то
-                Picture = BusinessLogicTest.Companion.blt!!.getPicture(ID_questions[countQuestion].id)
+                Picture = BusinessLogicTest.blt!!.getPicture(ID_questions[countQuestion].id)
                 val imageView = findViewById<View>(R.id.imageView) as ImageView
                 imageView.setImageBitmap(null)
                 imageView.destroyDrawingCache()

@@ -1,5 +1,6 @@
 package com.example.sl_terms
 
+import com.example.sl_terms.models.AvailableTest
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -39,6 +40,11 @@ class DataBaseTest {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+            // Test data
+            val availabletest = AvailableTest()
+            availabletest.id = 0
+            availabletest.name = "Test test"
+            listTest.add(AvailableTest())
             return listTest.toTypedArray()
         }
 

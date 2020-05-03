@@ -1,4 +1,4 @@
-package com.example.sl_terms
+package com.example.sl_terms.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,8 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatRadioButton
 import android.view.View
 import android.widget.*
-import com.example.sl_terms.CheckInActivity
-import kotlin.random.Random.Default.Companion
+import com.example.sl_terms.BusinessLogicTest
+import com.example.sl_terms.R
+import com.example.sl_terms.models.AvailableTest
 
 class CheckInActivity : AppCompatActivity() {
 
@@ -22,7 +23,7 @@ class CheckInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check_in)
-        availableTest = BusinessLogicTest.Companion.blt?.availableTest!!
+        availableTest = BusinessLogicTest.blt?.availableTest!!
         val buttons = availableTest.size
         if (buttons == 0) {
             val toast = Toast.makeText(applicationContext,
@@ -56,7 +57,7 @@ class CheckInActivity : AppCompatActivity() {
             val numberAsString = Integer.toString(selectedId)
             if (editText.text.toString() == "") {
             } else if (selectedId != -1) {
-                val id_student: Int = BusinessLogicTest.Companion.blt?.startTest(editText.text.toString())!!
+                val id_student: Int = BusinessLogicTest.blt?.startTest(editText.text.toString())!!
                 val id_studentS = Integer.toString(id_student)
                 rbn1 = findViewById<View>(selectedId) as RadioButton
                 val intent = Intent(this@CheckInActivity, TestActivity::class.java)
