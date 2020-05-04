@@ -35,14 +35,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <AutoCompleteTextView
-                    android:id="@+id/email"
+                <Spinner
+                    android:id="@+id/selectUser"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_email"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    android:hint="ФИО"
+                    android:prompt="@string/prompt_select_user"
+                    android:spinnerMode="dropdown" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -66,9 +65,11 @@
 
             <Button
                 android:id="@+id/email_sign_in_button"
-                android:layout_width="match_parent"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginTop="16dp"
+                android:background="@color/colorPrimary"
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 

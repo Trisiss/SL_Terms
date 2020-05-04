@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         // Set up the login form.
-        mEmailView = findViewById<View>(R.id.email) as AutoCompleteTextView
+//        mEmailView = findViewById<View>(R.id.email) as AutoCompleteTextView
 //        populateAutoComplete()
         mPasswordView = findViewById<View>(R.id.password) as EditText
         mPasswordView!!.setOnEditorActionListener(OnEditorActionListener { textView, id, keyEvent ->
@@ -54,6 +54,29 @@ class LoginActivity : AppCompatActivity() {
         })
         val mEmailSignInButton = findViewById<View>(R.id.email_sign_in_button) as Button
         val mProgressBar = progress_bar
+        val testArray = arrayListOf<String>("" ,"sdfsdf", "sdfsdf", "sdfsdf")
+        val mSpinner = selectUser
+        // адаптер
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, testArray)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        mSpinner.adapter = adapter
+        // заголовок
+//        mSpinner.prompt = R.string.prompt_select_user.toString()
+        // выделяем элемент
+//        spinner.setSelection(2);
+        // устанавливаем обработчик нажатия
+        mSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // показываем позиция нажатого элемента
+                Toast.makeText(baseContext, "Position = $position", Toast.LENGTH_SHORT).show()
+            }
+        }
         mEmailSignInButton.setOnClickListener {
             mEmailSignInButton.visibility = View.GONE
             mProgressBar.visibility = View.VISIBLE
