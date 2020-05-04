@@ -238,7 +238,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
         if (null != searchManager) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         }
-        val searchPlate = searchView.findViewById<View>(androidx.appcompat.appcompat.R.id.search_src_text) as EditText
+        val searchPlate = searchView.findViewById<View>(androidx.appcompat.R.id.search_src_text) as EditText
         searchPlate.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchTerms(searchPlate.text.toString())
@@ -280,7 +280,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                 true
             }
             R.id.action_test -> {
-                val intent = Intent(this@MainActivity, CheckInActivity::class.java)
+                val intent = Intent(this@MainActivity, LoginActivity::class.java)
                 startActivity(intent)
                 true
             }

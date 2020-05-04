@@ -19,22 +19,20 @@ import androidx.appcompat.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.EditText
+import android.widget.*
 import android.widget.TextView.OnEditorActionListener
 import com.example.sl_terms.R
+import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 
 /**
  * A login screen that offers login via email/password.
  */
-class LoginActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> {
+class LoginActivity : AppCompatActivity() {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private var mAuthTask: UserLoginTask? = null
+//    private var mAuthTask: UserLoginTask? = null
     // UI references.
     private var mEmailView: AutoCompleteTextView? = null
     private var mPasswordView: EditText? = null
@@ -45,21 +43,26 @@ class LoginActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>
         setContentView(R.layout.activity_login)
         // Set up the login form.
         mEmailView = findViewById<View>(R.id.email) as AutoCompleteTextView
-        populateAutoComplete()
+//        populateAutoComplete()
         mPasswordView = findViewById<View>(R.id.password) as EditText
         mPasswordView!!.setOnEditorActionListener(OnEditorActionListener { textView, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                attemptLogin()
+//                attemptLogin()
                 return@OnEditorActionListener true
             }
             false
         })
         val mEmailSignInButton = findViewById<View>(R.id.email_sign_in_button) as Button
-        mEmailSignInButton.setOnClickListener { attemptLogin() }
+        val mProgressBar = progress_bar
+        mEmailSignInButton.setOnClickListener {
+            mEmailSignInButton.visibility = View.GONE
+            mProgressBar.visibility = View.VISIBLE
+        }
         mLoginFormView = findViewById(R.id.login_form)
         mProgressView = findViewById(R.id.login_progress)
     }
 
+    /*
     private fun populateAutoComplete() {
         if (!mayRequestContacts()) {
             return
@@ -158,14 +161,14 @@ class LoginActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>
             val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime)
             mLoginFormView!!.visibility = if (show) View.GONE else View.VISIBLE
             mLoginFormView!!.animate().setDuration(shortAnimTime.toLong()).alpha(
-                    (if (show) 0 else 1.toFloat()) as Float).setListener(object : AnimatorListenerAdapter() {
+                    (if (show) 0.0.toFloat() else 1.0.toFloat())).setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     mLoginFormView!!.visibility = if (show) View.GONE else View.VISIBLE
                 }
             })
             mProgressView!!.visibility = if (show) View.VISIBLE else View.GONE
             mProgressView!!.animate().setDuration(shortAnimTime.toLong()).alpha(
-                    (if (show) 1 else 0.toFloat()) as Float).setListener(object : AnimatorListenerAdapter() {
+                    (if (show) 1.toFloat() else 0.toFloat())).setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     mProgressView!!.visibility = if (show) View.VISIBLE else View.GONE
                 }
@@ -265,5 +268,5 @@ class LoginActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>
         private val DUMMY_CREDENTIALS = arrayOf(
                 "foo@example.com:hello", "bar@example.com:world"
         )
-    }
+    }*/
 }

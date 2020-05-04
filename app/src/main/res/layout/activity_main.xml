@@ -44,6 +44,7 @@
         android:layout_centerInParent="true"
         android:background="@color/colorWhite"
         android:textAlignment="center"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        android:gravity="center_horizontal" />
 
 </RelativeLayout>
