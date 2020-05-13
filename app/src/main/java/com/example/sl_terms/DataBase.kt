@@ -26,7 +26,7 @@ internal class DataBase {
     fun searchTerm(TermName: String): Array<TermRecord> {
         val listTerms = ArrayList<TermRecord>()
         try {
-            val dataJsonArr = JSONObject(getResponse(Urls.GET_TERM.value + TermName))
+            val dataJsonArr = JSONObject(getResponse(Urls.GET_SEARCH_TERMS.value + TermName))
                     .getJSONArray("terms")
             for (i in 0 until dataJsonArr.length()) {
                 val termJSON = dataJsonArr.getJSONObject(i)

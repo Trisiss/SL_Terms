@@ -16,10 +16,7 @@ import androidx.appcompat.widget.SearchView
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.webkit.JavascriptInterface
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -28,6 +25,7 @@ import com.example.sl_terms.BusinessLogic
 import com.example.sl_terms.DataBase
 import com.example.sl_terms.R
 import com.example.sl_terms.models.TermRecord
+import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 import java.io.File
 import java.net.URLDecoder
@@ -39,7 +37,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
     private var mWebView: WebView? = null
     private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     private var bl: BusinessLogic? = null
-    private var db: DataBase? = null
+    lateinit private var db: DataBase
     private var lastURL: String? = null
 
     private inner class MyJavaScriptInterface {
@@ -149,8 +147,8 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
         setContentView(R.layout.activity_main)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-        mWebView = findViewById<View>(R.id.webView) as WebView
-        mSwipeRefreshLayout = findViewById<View>(R.id.swipe_container) as SwipeRefreshLayout
+        mWebView = webView
+        mSwipeRefreshLayout = swipe_container
         mSwipeRefreshLayout!!.setOnRefreshListener(this)
         mSwipeRefreshLayout!!.setColorSchemeColors(Color.GREEN)
         title = "Словарь терминов"
@@ -158,6 +156,11 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
         webSettings.defaultTextEncodingName = "utf-8"
         webSettings.javaScriptEnabled = true
         webSettings.builtInZoomControls = true
+        webSettings.domStorageEnabled = true
+        webSettings.cacheMode = WebSettings.LOAD_NO_CACHE
+        webSettings.allowFileAccess = true
+        webSettings.javaScriptCanOpenWindowsAutomatically = true
+        webSettings.loadsImagesAutomatically = true
         bl = BusinessLogic(this)
         db = DataBase()
         mWebView!!.addJavascriptInterface(MyJavaScriptInterface(), "jsInterface")
@@ -194,25 +197,25 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
     }
 
     private fun searchTerms(query: String) {
-        val masTerms: Array<TermRecord>
         var html = "<html><body><ul>"
-        masTerms = if (db!!.checkInternet()) {
-            db!!.searchTerm(query)
+        val masTerms: Array<TermRecord> = if (db.checkInternet()) {
+            db.searchTerm(query)
         } else {
             bl!!.searchTerm(query)
         }
-        if (masTerms.size > 0) {
+        Log.e("TAG", masTerms.toString())
+        if (masTerms.isNotEmpty()) {
             for (term in masTerms) {
                 html += "<li><a href=\"file://" +
                         filesDir.path + "/" +
-                        term!!.name!!.toLowerCase() + ".html\">" +
-                        term!!.name!!.toUpperCase() + "</a>"
+                        term.name!!.toLowerCase() + ".html\">" +
+                        term.name!!.toUpperCase() + "</a>"
             }
         } else {
             html += "Ничего не найдено"
         }
         html += "</li></ul></body></html>"
-        mWebView!!.loadData(html, "text/html; charset=UTF-8", null)
+        mWebView!!.loadDataWithBaseURL(lastURL, html, "text/html", "charset=UTF-8", null)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -253,7 +256,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
         val id = item.itemId
         return when (id) {
             R.id.action_load -> {
-                if (db!!.checkInternet()) {
+                if (db.checkInternet()) {
                     LoadAllTerms().execute()
                 } else {
                     showToast("Отсутствует интернет-соединение")
@@ -296,7 +299,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
 
     override fun onRefresh() {
         Handler().postDelayed({
-            if (db!!.checkInternet()) {
+            if (db.checkInternet()) {
                 var decode_url: String? = ""
                 try {
                     decode_url = URLDecoder.decode(lastURL, "UTF-8")
@@ -311,9 +314,9 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                 if (lastURL!!.contains("text/html")) {
                     searchTerms("")
                 } else if (lastURL!!.contains(".html")) {
-                    val masTerms = db!!.searchTerm(name)
-                    if (masTerms!!.size > 0) {
-                        for (term in masTerms) if (term!!.name.equals(name, ignoreCase = true)) bl!!.loadTerm(term)
+                    val masTerms = db.searchTerm(name)
+                    if (masTerms.size > 0) {
+                        for (term in masTerms) if (term.name.equals(name, ignoreCase = true)) bl!!.loadTerm(term)
                         mWebView!!.loadUrl(lastURL)
                         showToast("Термин обновлён")
                     } else {
@@ -325,7 +328,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                     if (lastURL!!.contains(".stp")) name = name.toLowerCase() + ".stp"
                     var success = 0
                     try {
-                        val imageJSON = JSONObject(db!!.getResponse(DataBase.Urls.GET_SEARCH_IMAGE_JSON.value + full_name))
+                        val imageJSON = JSONObject(db.getResponse(DataBase.Urls.GET_SEARCH_IMAGE_JSON.value + full_name))
                         success = imageJSON.getInt("success")
                         Log.d("MY_SUCCESS", "" + success)
                     } catch (e: Exception) {
@@ -368,8 +371,8 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
         protected override fun doInBackground(vararg p0: Void?): Void? {
             var stage = 0 // 0 - terms, 1 - images
             var progressCount = 0
-            val terms = db!!.searchTerm("")
-            val num_terms = terms!!.size
+            val terms = db.searchTerm("")
+            val num_terms = terms.size
             for (term in terms) {
                 publishProgress(stage, progressCount++, num_terms)
                 bl!!.loadTerm(term)
@@ -377,7 +380,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
             stage = 1
             progressCount = 0
             try {
-                val imagesJSON = JSONObject(db!!.getResponse(DataBase.Urls.GET_IMAGES.value))
+                val imagesJSON = JSONObject(db.getResponse(DataBase.Urls.GET_IMAGES.value))
                 val success = imagesJSON.getInt("success")
                 if (success == 1) {
                     val num_images = imagesJSON.getInt("number")
