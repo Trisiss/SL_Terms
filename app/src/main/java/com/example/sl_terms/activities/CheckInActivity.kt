@@ -2,10 +2,12 @@ package com.example.sl_terms.activities
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatRadioButton
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatRadioButton
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import com.example.sl_terms.BusinessLogicTest
 import com.example.sl_terms.R
 import com.example.sl_terms.models.AvailableTest
@@ -48,25 +50,24 @@ class CheckInActivity : AppCompatActivity() {
     }
 
     fun addListenerOnButton() { // radioGroup = (RadioGroup) findViewById(R.id.radiogroup);
+        val arguments = intent.extras
+        val selectUser = arguments!!["StudentFIO"].toString()
         myButton = findViewById<View>(R.id.button2) as Button
-        val selectUser = findViewById<View>(R.id.selectUser) as Spinner
         myButton!!.setOnClickListener {
             val rgp1 = findViewById<View>(R.id.radiogroup) as RadioGroup
             var selectedId = 0
             selectedId = rgp1.checkedRadioButtonId
             val numberAsString = Integer.toString(selectedId)
-            if (selectUser.prompt.toString() == "") {
-            } else if (selectedId != -1) {
-                val id_student: Int = BusinessLogicTest.blt?.startTest(selectUser.prompt.toString())!!
-                val id_studentS = Integer.toString(id_student)
-                rbn1 = findViewById<View>(selectedId) as RadioButton
-                val intent = Intent(this@CheckInActivity, TestActivity::class.java)
-                intent.putExtra("id_test", numberAsString)
-                intent.putExtra("id_student", id_studentS)
-                startActivity(intent)
-                Toast.makeText(this@CheckInActivity, numberAsString // myButton1.getText()
-                        , Toast.LENGTH_SHORT).show()
-            }
+            val id_student: Int = BusinessLogicTest.blt?.startTest(selectUser)!!
+            val id_studentS = Integer.toString(id_student)
+            rbn1 = findViewById<View>(selectedId) as RadioButton
+            val intent = Intent(this@CheckInActivity, TestActivity::class.java)
+            intent.putExtra("id_test", numberAsString)
+            intent.putExtra("id_student", id_studentS)
+            startActivity(intent)
+            Toast.makeText(this@CheckInActivity, numberAsString // myButton1.getText()
+                    , Toast.LENGTH_SHORT).show()
+        }
             /*      // get selected radio button from radioGroup
                     int selectedId = rgp.getCheckedRadioButtonId();
 
@@ -82,11 +83,10 @@ class CheckInActivity : AppCompatActivity() {
                     Intent intent = new Intent(CheckInActivity.this, TestActivity.class);
                     startActivity(intent);*/
         }
-    }
-
     override fun onBackPressed() {
         val intent = Intent(this@CheckInActivity, MainActivity::class.java)
         startActivity(intent)
         finish() // закрываем эту активити
     }
-}
+    }
+

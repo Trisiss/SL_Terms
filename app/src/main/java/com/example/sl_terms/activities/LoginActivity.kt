@@ -89,17 +89,16 @@ class LoginActivity : AppCompatActivity() {
         mEmailSignInButton.setOnClickListener {
             mEmailSignInButton.visibility = View.GONE
             mProgressBar.visibility = View.VISIBLE
-            Log.e("TAG", mSpinner.selectedItem.toString())
-            Log.e("TAG", mPasswordView!!.text.toString())
             val dataJson = JSONObject(dataBase.auth(mSpinner.selectedItem.toString(), mPasswordView!!.text.toString()))
             val success = dataJson.getInt("success")
             if (success == 1) {
                 val intent = Intent(this@LoginActivity, CheckInActivity::class.java)
+                intent.putExtra("StudentFIO", mSpinner.selectedItem.toString())
                 startActivity(intent)
             } else {
                 mEmailSignInButton.visibility = View.VISIBLE
                 mProgressBar.visibility = View.GONE
-                val builder = AlertDialog.Builder(baseContext)
+                val builder = AlertDialog.Builder(this@LoginActivity)
                 builder.setTitle("Важное сообщение!")
                         .setMessage("Покормите кота!")
                         .setPositiveButton("ОК, иду на кухню") {

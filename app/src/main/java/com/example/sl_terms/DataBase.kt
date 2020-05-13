@@ -72,7 +72,6 @@ internal class DataBase {
         val map: HashMap<String, String> = hashMapOf("Fullname" to fio, "Password" to pass)
         val mapJson = JSONObject(map as Map<*, *>).toString()
         val requestBody = RequestBody.create(JSON, mapJson)
-        Log.e("TAG", requestBody.contentLength().toString())
         val request: Request = Request.Builder()
                 .url(Urls.AUTH.value)
                 .post(requestBody)
