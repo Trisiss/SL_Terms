@@ -8,7 +8,7 @@ import java.util.*
 
 class DataBaseTest {
     private val client = OkHttpClient()
-    fun getResponse(url: String?): String {
+    fun getResponse(url: String): String {
         var strResponse = ""
         val request = Request.Builder().url(url).build()
         try {
@@ -29,6 +29,7 @@ class DataBaseTest {
                         .getJSONArray("tests")
                 for (i in 0 until dataJsonArr.length()) {
                     val testJSON = dataJsonArr.getJSONObject(i)
+                    println(testJSON)
                     val availabletest = AvailableTest()
                     availabletest.id = testJSON.getInt("id")
                     availabletest.name = testJSON.getString("name")
@@ -41,10 +42,10 @@ class DataBaseTest {
                 e.printStackTrace()
             }
             // Test data
-            val availabletest = AvailableTest()
-            availabletest.id = 0
-            availabletest.name = "Test test"
-            listTest.add(AvailableTest())
+//            val availabletest = AvailableTest()
+//            availabletest.id = 0
+//            availabletest.name = "Test test"
+//            listTest.add(AvailableTest())
             return listTest.toTypedArray()
         }
 
@@ -206,15 +207,15 @@ class DataBaseTest {
     }
 
     companion object {
-        private const val GET_AVAILABLE_TEST = "http://btidb.ru/available_tests.php"
-        private const val GET_ID_QUESTIONS = "http://btidb.ru/id_questions.php?id_test="
-        private const val GET_TEXT_QUESTION = "http://btidb.ru/name_question.php?id_question="
-        private const val INSERT_STUDENT = "http://btidb.ru/Insert_student.php?surname="
-        private const val GET_ID_VARIANT_NAME_VARIANT = "http://btidb.ru/id_variant_and_variant_name.php?id_question="
-        private const val ANSWER_TO_CUR_QUESTION = "http://btidb.ru/insert_answer.php?id_student="
-        private const val NUMBER_OF_CORRECT_ANSWERS = "http://btidb.ru/number_of_correct_answers.php?id_student="
-        private const val PICTURE = "http://btidb.ru/picture.php?id_question="
-        private const val PICTURE_NULL = "http://btidb.ru/null_picture.php?id_question="
+        private const val GET_AVAILABLE_TEST = "http://sl-terms.gearhostpreview.com/api/available_test.php"
+        private const val GET_ID_QUESTIONS = "http://sl-terms.gearhostpreview.com/api/id_questions.php?id_test="
+        private const val GET_TEXT_QUESTION = "http://sl-terms.gearhostpreview.com/api/name_question.php?id_question="
+        private const val INSERT_STUDENT = "http://sl-terms.gearhostpreview.com/api/Insert_student.php?surname="
+        private const val GET_ID_VARIANT_NAME_VARIANT = "http://sl-terms.gearhostpreview.com/api/id_variant_and_variant_name.php?id_question="
+        private const val ANSWER_TO_CUR_QUESTION = "http://sl-terms.gearhostpreview.com/api/insert_answer.php?id_student="
+        private const val NUMBER_OF_CORRECT_ANSWERS = "http://sl-terms.gearhostpreview.com/api/number_of_correct_answers.php?id_student="
+        private const val PICTURE = "http://sl-terms.gearhostpreview.com/api/picture.php?id_question="
+        private const val PICTURE_NULL = "http://sl-terms.gearhostpreview.com/api/null_picture.php?id_question="
         var dbt: DataBaseTest? = null
     }
 }

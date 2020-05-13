@@ -4,8 +4,11 @@ import android.Manifest.permission
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
+import android.app.Activity
+import android.app.Dialog
 import android.app.LoaderManager
 import android.content.CursorLoader
+import android.content.Intent
 import android.content.Loader
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -17,13 +20,18 @@ import android.provider.ContactsContract
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.TextView.OnEditorActionListener
+import androidx.appcompat.app.AlertDialog
+import com.example.sl_terms.DataBase
 import com.example.sl_terms.R
 import kotlinx.android.synthetic.main.activity_login.*
+import org.json.JSONObject
 import java.util.*
+import kotlin.concurrent.thread
 
 /**
  * A login screen that offers login via email/password.
@@ -38,6 +46,7 @@ class LoginActivity : AppCompatActivity() {
     private var mPasswordView: EditText? = null
     private var mProgressView: View? = null
     private var mLoginFormView: View? = null
+    private val dataBase: DataBase = DataBase()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -54,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
         })
         val mEmailSignInButton = findViewById<View>(R.id.email_sign_in_button) as Button
         val mProgressBar = progress_bar
-        val testArray = arrayListOf<String>("" ,"sdfsdf", "sdfsdf", "sdfsdf")
+        val testArray = dataBase.getStudents()
         val mSpinner = selectUser
         // адаптер
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, testArray)
@@ -80,6 +89,26 @@ class LoginActivity : AppCompatActivity() {
         mEmailSignInButton.setOnClickListener {
             mEmailSignInButton.visibility = View.GONE
             mProgressBar.visibility = View.VISIBLE
+            Log.e("TAG", mSpinner.selectedItem.toString())
+            Log.e("TAG", mPasswordView!!.text.toString())
+            val dataJson = JSONObject(dataBase.auth(mSpinner.selectedItem.toString(), mPasswordView!!.text.toString()))
+            val success = dataJson.getInt("success")
+            if (success == 1) {
+                val intent = Intent(this@LoginActivity, CheckInActivity::class.java)
+                startActivity(intent)
+            } else {
+                mEmailSignInButton.visibility = View.VISIBLE
+                mProgressBar.visibility = View.GONE
+                val builder = AlertDialog.Builder(baseContext)
+                builder.setTitle("Важное сообщение!")
+                        .setMessage("Покормите кота!")
+                        .setPositiveButton("ОК, иду на кухню") {
+                            dialog, id ->  dialog.cancel()
+                        }
+                builder.create()
+                Toast.makeText(baseContext, dataJson.getString("message"), Toast.LENGTH_LONG).show()
+            }
+
         }
         mLoginFormView = findViewById(R.id.login_form)
         mProgressView = findViewById(R.id.login_progress)

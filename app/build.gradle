@@ -35,10 +35,12 @@ dependencies {
     })
     testImplementation 'junit:junit:4.12'
 
+    // JSON
+    implementation "com.squareup.moshi:moshi:1.9.2"
 
     // Internet
     implementation 'com.google.android.gms:play-services-appindexing:9.8.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.3'
 
     // Android
     implementation 'androidx.appcompat:appcompat:1.1.0'
