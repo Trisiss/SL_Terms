@@ -75,14 +75,14 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                         } else {
                             var success = 0
                             try {
-                                val imageJSON = JSONObject(db!!.getResponse(DataBase.Urls.GET_SEARCH_IMAGE_JSON.value + full_name))
+                                val imageJSON = JSONObject(db.getResponse(DataBase.GET_SEARCH_IMAGE_JSON + full_name))
                                 success = imageJSON.getInt("success")
                                 Log.d("MY_SUCCESS", "" + success)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
                             if (success == 1) {
-                                bl!!.loadImage(DataBase.Urls.GET_SEARCH_IMAGE.value + full_name, name)
+                                bl!!.loadImage(DataBase.GET_SEARCH_IMAGE + full_name, name)
                                 //mWebView.loadUrl("file://" + my_image_storage_dir + "/" + name);
                                 val imgData = "<img src=$name>"
                                 mWebView!!.loadDataWithBaseURL("file://$myImageStorageDir/",
@@ -103,14 +103,14 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                             var success = 0
                             try {
                                 showToast(full_name)
-                                val BinaryJSON = JSONObject(db!!.getResponse(DataBase.Urls.GET_SEARCH_IMAGE_JSON.value + full_name))
+                                val BinaryJSON = JSONObject(db!!.getResponse(DataBase.GET_SEARCH_IMAGE_JSON + full_name))
                                 success = BinaryJSON.getInt("success")
                                 Log.d("MY_SUCCESS", "" + success)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
                             if (success == 1) {
-                                bl!!.loadBinary(DataBase.Urls.GET_SEARCH_IMAGE.value + full_name, name)
+                                bl!!.loadBinary(DataBase.GET_SEARCH_IMAGE + full_name, name)
                                 showToast("Модель кэширована")
                             } else {
                                 showToast("Модель не загружена в БД")
@@ -328,7 +328,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                     if (lastURL!!.contains(".stp")) name = name.toLowerCase() + ".stp"
                     var success = 0
                     try {
-                        val imageJSON = JSONObject(db.getResponse(DataBase.Urls.GET_SEARCH_IMAGE_JSON.value + full_name))
+                        val imageJSON = JSONObject(db.getResponse(DataBase.GET_SEARCH_IMAGE_JSON + full_name))
                         success = imageJSON.getInt("success")
                         Log.d("MY_SUCCESS", "" + success)
                     } catch (e: Exception) {
@@ -336,7 +336,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                     }
                     if (success == 1) {
                         if (lastURL!!.contains(".jpg")) {
-                            bl!!.loadImage(DataBase.Urls.GET_SEARCH_IMAGE.value + full_name, name)
+                            bl!!.loadImage(DataBase.GET_SEARCH_IMAGE + full_name, name)
                             //mWebView.loadUrl("file://" + getFilesDir().getPath() + "/" + name);
                             val imgData = "<img src=$name>"
                             mWebView!!.loadDataWithBaseURL("file://" + filesDir.path + "/",
@@ -380,7 +380,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
             stage = 1
             progressCount = 0
             try {
-                val imagesJSON = JSONObject(db.getResponse(DataBase.Urls.GET_IMAGES.value))
+                val imagesJSON = JSONObject(db.getResponse(DataBase.GET_IMAGES))
                 val success = imagesJSON.getInt("success")
                 if (success == 1) {
                     val num_images = imagesJSON.getInt("number")
@@ -392,7 +392,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                         val matcher = Pattern.compile("([^/]+)[.]").matcher(urlForSearch)
                         while (matcher.find()) name = matcher.group(1)
                         name = name.toLowerCase() + ".jpg"
-                        bl!!.loadImage(DataBase.Urls.GET_SEARCH_IMAGE.value + urlForSearch, name)
+                        bl!!.loadImage(DataBase.GET_SEARCH_IMAGE + urlForSearch, name)
                     }
                 }
             } catch (e: Exception) {

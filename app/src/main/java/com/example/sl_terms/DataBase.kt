@@ -26,7 +26,7 @@ internal class DataBase {
     fun searchTerm(TermName: String): Array<TermRecord> {
         val listTerms = ArrayList<TermRecord>()
         try {
-            val dataJsonArr = JSONObject(getResponse(Urls.GET_SEARCH_TERMS.value + TermName))
+            val dataJsonArr = JSONObject(getResponse(GET_SEARCH_TERMS + TermName))
                     .getJSONArray("terms")
             for (i in 0 until dataJsonArr.length()) {
                 val termJSON = dataJsonArr.getJSONObject(i)
@@ -42,17 +42,17 @@ internal class DataBase {
     }
 
     fun getTermByID(id: Int): String {
-        return getResponse(Urls.GET_TERM.value + id)
+        return getResponse(GET_TERM + id)
     }
 
     fun checkInternet(): Boolean {
-        return getResponse(Urls.GET_SEARCH_TERMS.value + "something") != ""
+        return getResponse(GET_SEARCH_TERMS + "something") != ""
     }
 
     fun getStudents(): Array<String> {
         val listStudents = ArrayList<String>()
         try {
-            val dataJsonArr = JSONObject(getResponse(Urls.GET_STUDENTS.value))
+            val dataJsonArr = JSONObject(getResponse(GET_STUDENTS))
                     .getJSONArray("students")
             for (i in 0 until dataJsonArr.length()) {
                 val studentJSON = dataJsonArr.getJSONObject(i)
@@ -73,7 +73,7 @@ internal class DataBase {
         val mapJson = JSONObject(map as Map<*, *>).toString()
         val requestBody = RequestBody.create(JSON, mapJson)
         val request: Request = Request.Builder()
-                .url(Urls.AUTH.value)
+                .url(AUTH)
                 .post(requestBody)
                 .build()
         try {
@@ -87,14 +87,14 @@ internal class DataBase {
 
     }
 
-    enum class Urls(val value: String) {
-        GET_SEARCH_TERMS("http://sl-terms.gearhostpreview.com/api/get_search_terms.php?search="),
-        GET_TERM("http://sl-terms.gearhostpreview.com/api/get_term.php?type=1&id="),
-        GET_SEARCH_IMAGE_JSON("http://sl-terms.gearhostpreview.com/api/get_search_image.php?type=0&search="),
-        GET_SEARCH_IMAGE("http://sl-terms.gearhostpreview.com/api/get_search_image.php?type=1&search="),
-        GET_IMAGES("http://sl-terms.gearhostpreview.com/api/get_images.php"),
-        GET_STUDENTS("http://sl-terms.gearhostpreview.com/api/get_students.php"),
-        AUTH("http://sl-terms.gearhostpreview.com/api/auth.php")
+    companion object {
+        const val GET_SEARCH_TERMS = "http://sl-terms.gearhostpreview.com/api/get_search_terms.php?search="
+        const val GET_TERM = "http://sl-terms.gearhostpreview.com/api/get_term.php?type=1&id="
+        const val GET_SEARCH_IMAGE_JSON = "http://sl-terms.gearhostpreview.com/api/get_search_image.php?type=0&search="
+        const val GET_SEARCH_IMAGE = "http://sl-terms.gearhostpreview.com/api/get_search_image.php?type=1&search="
+        const val GET_IMAGES = "http://sl-terms.gearhostpreview.com/api/get_images.php"
+        const val GET_STUDENTS = "http://sl-terms.gearhostpreview.com/api/get_students.php"
+        const val AUTH = "http://sl-terms.gearhostpreview.com/api/auth.php"
     }
 
 
