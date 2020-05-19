@@ -58,12 +58,12 @@ class CheckInActivity : AppCompatActivity() {
             var selectedId = 0
             selectedId = rgp1.checkedRadioButtonId
             val numberAsString = Integer.toString(selectedId)
-            val id_student: Int = BusinessLogicTest.blt?.startTest(selectUser)!!
-            val id_studentS = Integer.toString(id_student)
+//            val id_student: Int = BusinessLogicTest.blt?.startTest(selectUser)!!
+//            val id_studentS = Integer.toString(id_student)
             rbn1 = findViewById<View>(selectedId) as RadioButton
             val intent = Intent(this@CheckInActivity, TestActivity::class.java)
             intent.putExtra("id_test", numberAsString)
-            intent.putExtra("id_student", id_studentS)
+//            intent.putExtra("id_student", id_studentS)
             startActivity(intent)
             Toast.makeText(this@CheckInActivity, numberAsString // myButton1.getText()
                     , Toast.LENGTH_SHORT).show()

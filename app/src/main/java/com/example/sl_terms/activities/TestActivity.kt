@@ -41,9 +41,9 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
         try {
             id_session = 0
             id_testS = intent.getStringExtra("id_test")
-            id_studentS = intent.getStringExtra("id_student")
+//            id_studentS = intent.getStringExtra("id_student")
             val id_test = id_testS?.toInt()!!
-            id_student = id_studentS?.toInt()!!
+//            id_student = id_studentS?.toInt()!!
             //создание радио кнопок
             myButton1 = findViewById<View>(R.id.button1) as Button
             myButton2 = findViewById<View>(R.id.button2) as Button
@@ -115,7 +115,7 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
                 val textView = findViewById<View>(R.id.textView) as TextView
                 //проверка есть ли рисунок
                 Picture_null = BusinessLogicTest.blt!!.getPictureNull(ID_questions[countQuestion].id)
-                val result = Integer.toString(Picture_null[0].id)
+                val result = Picture_null[0].id.toString()
                 //если рисунок есть то
                 Picture = BusinessLogicTest.blt!!.getPicture(ID_questions[countQuestion].id)
                 val imageView = findViewById<View>(R.id.imageView) as ImageView
