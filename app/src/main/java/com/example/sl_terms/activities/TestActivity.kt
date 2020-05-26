@@ -13,6 +13,8 @@ import android.widget.*
 import com.example.sl_terms.BusinessLogicTest
 import com.example.sl_terms.R
 import com.example.sl_terms.models.AvailableTest
+import com.example.sl_terms.models.Option
+import com.example.sl_terms.models.Question
 
 class TestActivity : AppCompatActivity(), View.OnClickListener {
     var myButton1: Button? = null
@@ -22,15 +24,18 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
     var rbn: RadioButton? = null
     var rbn1: RadioButton? = null
     lateinit var ID_questions: Array<AvailableTest>
+    lateinit var questions: Array<Question>
     lateinit var IdVariantVariantName: Array<AvailableTest>
+    lateinit var options: Array<Option>
     lateinit var Picture_null: Array<AvailableTest>
+    var pictureNull: Int = 0
     lateinit var Picture: Array<AvailableTest>
-    var id_studentS: String? = null
-    var id_student = 0
-    var id_testS: String? = null
+    var idStudentStr: String? = null
+    var idStudent = 0
+    var idTestStr: String? = null
     var countQuestionsS: String? = null
     var numberCorrectAnswersS: String? = null
-    var id_session = 0
+    var idSession = 0
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,30 +44,38 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
 //   radioButton.setChecked(true);
 //получение данных с превой активити
         try {
-            id_session = 0
-            id_testS = intent.getStringExtra("id_test")
-//            id_studentS = intent.getStringExtra("id_student")
-            val id_test = id_testS?.toInt()!!
-//            id_student = id_studentS?.toInt()!!
+            idSession = 0
+            idTestStr = intent.getStringExtra("id_test")
+            idStudentStr = intent.getStringExtra("id_student")
+            val idTest = idTestStr?.toInt()!!
+            idStudent = idStudentStr?.toInt()!!
             //создание радио кнопок
             myButton1 = findViewById<View>(R.id.button1) as Button
             myButton2 = findViewById<View>(R.id.button2) as Button
             val textView = findViewById<View>(R.id.textView) as TextView
-            ID_questions = BusinessLogicTest.blt!!.getIdQuestions(id_test)
-            Picture_null = BusinessLogicTest.blt!!.getPictureNull(ID_questions[0].id)
-            val result = Integer.toString(Picture_null[0].id)
-            val countQuestions = ID_questions.size
-            countQuestionsS = Integer.toString(countQuestions)
-            textView.text = ID_questions[0].name
-            IdVariantVariantName = BusinessLogicTest.blt!!.getIdVariantVariantName(ID_questions[0].id)
-            val buttons = IdVariantVariantName.size
+            ID_questions = BusinessLogicTest.blt.getIdQuestions(idTest)
+            questions = BusinessLogicTest.blt.getQuestions(idTest)
+//            Picture_null = BusinessLogicTest.blt.getPictureNull(ID_questions[0].id)
+//            val result = Integer.toString(Picture_null[0].id)
+            pictureNull = if (questions[0].idPicture == null) 0 else questions[0].idPicture!!
+//            val countQuestions = ID_questions.size
+            val countQuestions = questions.size
+            countQuestionsS = countQuestions.toString()
+//            textView.text = ID_questions[0].name
+            textView.text = questions[0].text
+//            IdVariantVariantName = BusinessLogicTest.blt.getIdVariantVariantName(ID_questions[0].id)
+            options = BusinessLogicTest.blt.getOptions(questions[0].id)
+//            val buttons = IdVariantVariantName.size
+            val buttons = options.size
             val rb = arrayOfNulls<AppCompatRadioButton>(buttons)
             val rgp = findViewById<View>(R.id.radioGroup) as RadioGroup
             rgp.orientation = LinearLayout.VERTICAL
             for (i in 0 until buttons) {
                 val rbn = RadioButton(this)
-                rbn.id = IdVariantVariantName[i].id
-                rbn.text = IdVariantVariantName[i].name
+//                rbn.id = IdVariantVariantName[i].id
+                rbn.id = options[i].id
+//                rbn.text = IdVariantVariantName[i].name
+                rbn.text = options[i].name
                 val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
                 rbn.layoutParams = params
                 rgp.addView(rbn)
@@ -83,26 +96,26 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
             R.id.button1 -> {
                 //перед закрытием теста отправить последний вопрос на сервер
                 val rgp2 = findViewById<View>(R.id.radioGroup) as RadioGroup
-                val countQuestion2: Int = BusinessLogicTest.blt?.nextQuestion()!!
+                val countQuestion2: Int = BusinessLogicTest.blt.nextQuestion()
                 //отправляем ответ на сервер
                 val variant2 = rgp2.checkedRadioButtonId
-                BusinessLogicTest.blt!!.answerToCurQuestion(id_student, ID_questions[countQuestion2 - 1].id, variant2, id_session)
+                BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, variant2, idSession)
                 val intent = Intent(this@TestActivity, ResultActivity::class.java)
-                numberCorrectAnswersS = Integer.toString(BusinessLogicTest.blt!!.numberOfCorrectAnswers(id_student))
+                numberCorrectAnswersS = BusinessLogicTest.blt.numberOfCorrectAnswers(idStudent, idTestStr!!.toInt()).toString()
                 intent.putExtra("numberCorrectAnswersS", numberCorrectAnswersS)
                 intent.putExtra("countQuestions", countQuestionsS)
                 startActivity(intent)
             }
             R.id.button2 -> {
                 val rgp1 = findViewById<View>(R.id.radioGroup) as RadioGroup
-                val countQuestion: Int = BusinessLogicTest.blt!!.nextQuestion()
+                val countQuestion: Int = BusinessLogicTest.blt.nextQuestion()
                 //отправляем ответ на сервер
                 val variant = rgp1.checkedRadioButtonId
-                BusinessLogicTest.blt!!.answerToCurQuestion(id_student, ID_questions[countQuestion - 1].id, variant, id_session)
+                BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, variant, idSession)
                 //если номер вопроса равен количеству вопросов, открыть активити с результатами
-                if (countQuestion == ID_questions.size) {
+                if (countQuestion == questions.size) {
                     val intent2 = Intent(this@TestActivity, ResultActivity::class.java)
-                    numberCorrectAnswersS = Integer.toString(BusinessLogicTest.blt!!.numberOfCorrectAnswers(id_student))
+                    numberCorrectAnswersS = BusinessLogicTest.blt.numberOfCorrectAnswers(id_student = idStudent, idTest = idTestStr!!.toInt()).toString()
                     intent2.putExtra("numberCorrectAnswersS", numberCorrectAnswersS)
                     intent2.putExtra("countQuestions", countQuestionsS)
                     startActivity(intent2)
@@ -111,13 +124,14 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
                 //удаляем все радио кнопки
                 rgp1.removeAllViews()
                 //переходим к следующему вопросу
-                IdVariantVariantName = BusinessLogicTest.blt!!.getIdVariantVariantName(ID_questions[countQuestion].id)
+//                IdVariantVariantName = BusinessLogicTest.blt.getIdVariantVariantName(ID_questions[countQuestion].id)
+                options = BusinessLogicTest.blt.getOptions(questions[countQuestion].id)
                 val textView = findViewById<View>(R.id.textView) as TextView
                 //проверка есть ли рисунок
-                Picture_null = BusinessLogicTest.blt!!.getPictureNull(ID_questions[countQuestion].id)
+                Picture_null = BusinessLogicTest.blt.getPictureNull(questions[countQuestion].id)
                 val result = Picture_null[0].id.toString()
                 //если рисунок есть то
-                Picture = BusinessLogicTest.blt!!.getPicture(ID_questions[countQuestion].id)
+                Picture = BusinessLogicTest.blt.getPicture(questions[countQuestion].id)
                 val imageView = findViewById<View>(R.id.imageView) as ImageView
                 imageView.setImageBitmap(null)
                 imageView.destroyDrawingCache()
@@ -126,16 +140,16 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
                     val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
                     imageView.setImageBitmap(decodedByte)
                 }
-                textView.text = ID_questions[countQuestion].name
+                textView.text = questions[countQuestion].text
                 //динамическое создание радио кнопок
-                val buttons = IdVariantVariantName.size
+                val buttons = options.size
                 val rb = arrayOfNulls<AppCompatRadioButton>(buttons)
                 rgp1.orientation = LinearLayout.VERTICAL
                 var i = 0
                 while (i < buttons) {
                     val rbn1 = RadioButton(this)
-                    rbn1.id = IdVariantVariantName[i].id
-                    rbn1.text = IdVariantVariantName[i].name
+                    rbn1.id = options[i].id
+                    rbn1.text = options[i].name
                     val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
                     rbn1.layoutParams = params
                     rgp1.addView(rbn1)
@@ -147,7 +161,7 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
 
     public override fun onStop() {
         super.onStop()
-        id_session = 2
+        idSession = 2
     }
 
     override fun onBackPressed() {

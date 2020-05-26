@@ -1,6 +1,8 @@
 package com.example.sl_terms
 
 import com.example.sl_terms.models.AvailableTest
+import com.example.sl_terms.models.Option
+import com.example.sl_terms.models.Question
 
 class BusinessLogicTest {
     //переменная хранящая id теста
@@ -41,55 +43,54 @@ class BusinessLogicTest {
         System.out.println("000000000");*/
 /*  return ID_questions[question].name;
     }*/
-        fun getIdQuestions(ID:Int): Array<AvailableTest> {
-            ID_questions = dataBaseTest.getIdQuestion(ID)
-            for (i in ID_questions.indices) {
-                ID_questions.get(i).name = dataBaseTest.getTextQuestion(ID_questions.get(i).id).get(0).name
-                // System.out.println(ID_questions[i].name);
-            }
-            /*  ID_questions = dataBaseTest.getTextQuestion(ID);
-        System.out.println(ID_questions.length);
-        for (int i = 0; i< ID_questions.length; i++)
-            System.out.println(ID_questions[i].name);
-        System.out.println("000000000");*/return ID_questions
+    fun getIdQuestions(ID:Int): Array<AvailableTest> {
+        ID_questions = dataBaseTest.getIdQuestion(ID)
+        for (i in ID_questions.indices) {
+            ID_questions.get(i).name = dataBaseTest.getTextQuestion(ID_questions.get(i).id).get(0).name
         }
+        return ID_questions
+    }
 
-        //получить текст вопроса
-        fun getCurQuestionText(): kotlin.Unit {}
+    fun getQuestions(id: Int): Array<Question> = dataBaseTest.getQuestions(id)
 
-        //получить варианты ответа
-        fun getIdVariantVariantName(idQuestion:Int): Array<AvailableTest> {
-            IdVariantVariantName = dataBaseTest.geIdVariantVariantName(idQuestion)
-            return IdVariantVariantName
-        }
+    //получить текст вопроса
+    fun getCurQuestionText(): kotlin.Unit {}
 
-        //передать ответ студента на сервер
-        fun answerToCurQuestion(id_student:Int, id_question:Int, id_variant:Int, id_session:Int): kotlin.Unit {
-            dataBaseTest.answerToCurQuestion(id_student, id_question, id_variant, id_session)
-        }
+    //получить варианты ответа
+    fun getIdVariantVariantName(idQuestion:Int): Array<AvailableTest> {
+        IdVariantVariantName = dataBaseTest.geIdVariantVariantName(idQuestion)
+        return IdVariantVariantName
+    }
 
-        //следующий вопрос
-        fun nextQuestion(): Int {
-            countQuestion++
-            return countQuestion
-        }
+    fun getOptions(id: Int): Array<Option> = dataBaseTest.getOptions(id)
 
-        //получить количество правильных ответов
-        fun numberOfCorrectAnswers(id_student:Int): Int {
-            return dataBaseTest.numberOfCorrectAnswers(id_student)
-        }
+    //передать ответ студента на сервер
+    fun answerToCurQuestion(id_student:Int, id_question:Int, id_variant:Int, id_session:Int): Unit {
+        dataBaseTest.answerToCurQuestion(id_student, id_question, id_variant, id_session)
+    }
 
-        fun getPicture(idQuestion:Int): Array<AvailableTest> {
-            Picture = dataBaseTest.getPicture(idQuestion)
-            return Picture
-        }
+    //следующий вопрос
+    fun nextQuestion(): Int {
+        countQuestion++
+        return countQuestion
+    }
 
-        fun getPictureNull(idQuestion:Int): Array<AvailableTest> {
-            Picture = dataBaseTest.getPictureNull(idQuestion)
-            return Picture
-        }
+    //получить количество правильных ответов
+    fun numberOfCorrectAnswers(id_student:Int, idTest: Int): Int {
+        return dataBaseTest.numberOfCorrectAnswers(id_student, idTest)
+    }
+
+    fun getPicture(idQuestion:Int): Array<AvailableTest> {
+        Picture = dataBaseTest.getPicture(idQuestion)
+        return Picture
+    }
+
+    fun getPictureNull(idQuestion:Int): Array<AvailableTest> {
+        Picture = dataBaseTest.getPictureNull(idQuestion)
+        return Picture
+    }
 
     companion object  {
-        var  blt:BusinessLogicTest? = BusinessLogicTest()
+        var  blt:BusinessLogicTest = BusinessLogicTest()
     }
 }

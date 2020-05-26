@@ -6,8 +6,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatRadioButton
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import com.example.sl_terms.BusinessLogicTest
 import com.example.sl_terms.R
 import com.example.sl_terms.models.AvailableTest
@@ -25,7 +23,7 @@ class CheckInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check_in)
-        availableTest = BusinessLogicTest.blt?.availableTest!!
+        availableTest = BusinessLogicTest.blt.availableTest
         val buttons = availableTest.size
         if (buttons == 0) {
             val toast = Toast.makeText(applicationContext,
@@ -57,13 +55,13 @@ class CheckInActivity : AppCompatActivity() {
             val rgp1 = findViewById<View>(R.id.radiogroup) as RadioGroup
             var selectedId = 0
             selectedId = rgp1.checkedRadioButtonId
-            val numberAsString = Integer.toString(selectedId)
-//            val id_student: Int = BusinessLogicTest.blt?.startTest(selectUser)!!
-//            val id_studentS = Integer.toString(id_student)
+            val numberAsString = selectedId.toString()
+            val idStudent: Int? = BusinessLogicTest.blt.startTest(selectUser)
+            val idStudentStr = idStudent.toString()
             rbn1 = findViewById<View>(selectedId) as RadioButton
             val intent = Intent(this@CheckInActivity, TestActivity::class.java)
             intent.putExtra("id_test", numberAsString)
-//            intent.putExtra("id_student", id_studentS)
+            intent.putExtra("id_student", idStudentStr)
             startActivity(intent)
             Toast.makeText(this@CheckInActivity, numberAsString // myButton1.getText()
                     , Toast.LENGTH_SHORT).show()

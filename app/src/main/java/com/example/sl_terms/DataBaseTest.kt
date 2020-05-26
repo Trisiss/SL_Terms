@@ -1,9 +1,16 @@
 package com.example.sl_terms
 
 import com.example.sl_terms.models.AvailableTest
+import com.example.sl_terms.models.Option
+import com.example.sl_terms.models.Question
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
+import java.lang.reflect.Type
 import java.util.*
 
 class DataBaseTest {
@@ -13,11 +20,30 @@ class DataBaseTest {
         val request = Request.Builder().url(url).build()
         try {
             val response = client.newCall(request).execute()
-            strResponse = response.body()!!.string()
+            strResponse = response.body()?.string().toString()
+            println("$url -- ${response.code()}")
         } catch (e: Exception) {
             e.printStackTrace()
         }
         return strResponse
+    }
+
+    fun getResponseObj(url: String): Any {
+        data class Response (val code: Int, val body: String)
+        var responseCode: Int = 200
+        var responseStr: String = ""
+        val request = Request.Builder().url(url).build()
+        try {
+            val response = client.newCall(request).execute()
+            responseCode = response.code()
+            if (response.body() != null) {
+                responseStr = response.body().toString()
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return Response(code = responseCode, body = responseStr)
     }
 
     //получить список доступных тестов
@@ -85,24 +111,28 @@ class DataBaseTest {
         return listTest.toTypedArray()
     }
 
+    fun getQuestions(id_test: Int): Array<Question> {
+        var listQuestions: List<Question> = listOf()
+        try {
+            val listType: Type = Types.newParameterizedType(List::class.java, Question::class.java)
+            val dataJson = getResponse(GET_ID_QUESTIONS + id_test)
+            val moshi = Moshi.Builder()
+                    .add(KotlinJsonAdapterFactory())
+                    .build()
+            val questionAdapter: JsonAdapter<List<Question>> = moshi.adapter(listType)
+            listQuestions = questionAdapter.fromJson(dataJson)!!
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return listQuestions.toTypedArray()
+    }
+
     //добавить студента в бд
     fun insertStudent(FIO: String): Int {
         var id_student = 0
-        val listTest = ArrayList<AvailableTest>()
         try {
-            val dataJsonArr = JSONObject(getResponse(INSERT_STUDENT + FIO))
-                    .getJSONArray("id_student")
-            for (i in 0 until dataJsonArr.length()) {
-                val testJSON = dataJsonArr.getJSONObject(i)
-                val availabletest = AvailableTest()
-                availabletest.id = testJSON.getInt("id_student")
-                // System.out.println("2222222222");
-// System.out.println(availabletest.id);
-                listTest.add(availabletest)
-                if (i == dataJsonArr.length() - 1) {
-                    id_student = availabletest.id
-                }
-            }
+            val dataJson = JSONObject(getResponse(INSERT_STUDENT + FIO))
+            id_student = dataJson.getInt("idStudent")
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -131,6 +161,22 @@ class DataBaseTest {
         return listTest.toTypedArray()
     }
 
+    fun getOptions(id_question: Int): Array<Option> {
+        var listOptions: List<Option> = listOf()
+        try {
+            val listType: Type = Types.newParameterizedType(List::class.java, Option::class.java)
+            val dataJson = getResponse(GET_ID_VARIANT_NAME_VARIANT + id_question)
+            val moshi = Moshi.Builder()
+                    .add(KotlinJsonAdapterFactory())
+                    .build()
+            val optionAdapter: JsonAdapter<List<Option>> = moshi.adapter(listType)
+            listOptions = optionAdapter.fromJson(dataJson)!!
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return listOptions.toTypedArray()
+    }
+
     //отправить вариант ответа
     fun answerToCurQuestion(id_student: Int, id_question: Int, id_variant: Int, id_session: Int) {
         getResponse(ANSWER_TO_CUR_QUESTION + id_student + "&id_question=" + id_question + "&id_answer="
@@ -139,21 +185,11 @@ class DataBaseTest {
 
     //
 //получить количество правильных ответов
-    fun numberOfCorrectAnswers(id_student: Int): Int {
+    fun numberOfCorrectAnswers(id_student: Int, idTest: Int): Int {
         var number = 0
-        val listTest = ArrayList<AvailableTest>()
         try {
-            val dataJsonArr = JSONObject(getResponse(NUMBER_OF_CORRECT_ANSWERS + id_student))
-                    .getJSONArray("count")
-            for (i in 0 until dataJsonArr.length()) {
-                val testJSON = dataJsonArr.getJSONObject(i)
-                val availabletest = AvailableTest()
-                availabletest.id = testJSON.getInt("count")
-                listTest.add(availabletest)
-                if (i == dataJsonArr.length() - 1) {
-                    number = availabletest.id
-                }
-            }
+            val dataJson = JSONObject(getResponse("$NUMBER_OF_CORRECT_ANSWERS$id_student&id_test=$idTest"))
+            number = dataJson.getInt("count")
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -208,10 +244,10 @@ class DataBaseTest {
 
     companion object {
         private const val GET_AVAILABLE_TEST = "http://sl-terms.gearhostpreview.com/api/available_test.php"
-        private const val GET_ID_QUESTIONS = "http://sl-terms.gearhostpreview.com/api/id_questions.php?id_test="
+        private const val GET_ID_QUESTIONS = "http://sl-terms.gearhostpreview.com/api/get_questions.php?id_test="
         private const val GET_TEXT_QUESTION = "http://sl-terms.gearhostpreview.com/api/name_question.php?id_question="
         private const val INSERT_STUDENT = "http://sl-terms.gearhostpreview.com/api/Insert_student.php?surname="
-        private const val GET_ID_VARIANT_NAME_VARIANT = "http://sl-terms.gearhostpreview.com/api/id_variant_and_variant_name.php?id_question="
+        private const val GET_ID_VARIANT_NAME_VARIANT = "http://sl-terms.gearhostpreview.com/api/get_options.php?id_question="
         private const val ANSWER_TO_CUR_QUESTION = "http://sl-terms.gearhostpreview.com/api/insert_answer.php?id_student="
         private const val NUMBER_OF_CORRECT_ANSWERS = "http://sl-terms.gearhostpreview.com/api/number_of_correct_answers.php?id_student="
         private const val PICTURE = "http://sl-terms.gearhostpreview.com/api/picture.php?id_question="
