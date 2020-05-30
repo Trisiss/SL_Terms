@@ -8,5 +8,6 @@ import com.squareup.moshi.Json
 data class Question (
         val id: Int,
         val text: String,
+        val type: Int,
         @Json(name = "id_picture") val idPicture: Int?
 )
