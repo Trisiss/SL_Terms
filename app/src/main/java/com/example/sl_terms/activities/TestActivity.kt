@@ -3,19 +3,18 @@ package com.example.sl_terms.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Base64
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatRadioButton
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sl_terms.BusinessLogicTest
+import com.example.sl_terms.ItemMoveCallback
 import com.example.sl_terms.R
 import com.example.sl_terms.adapters.RVAdapter
 import com.example.sl_terms.models.AvailableTest
@@ -217,6 +216,12 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
 
                     val adapterLeft = RVAdapter(options = optionLeft)
                     val adapterRight = RVAdapter(options = optionRight)
+                    val callback: ItemTouchHelper.Callback = ItemMoveCallback(adapterLeft)
+                    val callback2: ItemTouchHelper.Callback = ItemMoveCallback(adapterRight)
+                    val touchHelper = ItemTouchHelper(callback)
+                    val touchHelper2 = ItemTouchHelper(callback2)
+                    touchHelper.attachToRecyclerView(recycler_view)
+                    touchHelper2.attachToRecyclerView(recycler_view2)
                     rv.adapter = adapterLeft
                     rv2.adapter = adapterRight
                     layout.visibility = LinearLayout.VISIBLE

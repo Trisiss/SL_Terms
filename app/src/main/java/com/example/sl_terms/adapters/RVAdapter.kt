@@ -1,19 +1,23 @@
 package com.example.sl_terms.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sl_terms.ItemMoveCallback.ItemTouchHelperContract
 import com.example.sl_terms.R
-import com.example.sl_terms.adapters.RVAdapter.PersonViewHolder
 import com.example.sl_terms.models.Option
 import kotlinx.android.synthetic.main.item.view.*
+import java.util.*
 
-class RVAdapter internal constructor(var options: List<Option>) : RecyclerView.Adapter<PersonViewHolder>() {
-    class PersonViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+class RVAdapter internal constructor(var options: List<Option>) : RecyclerView.Adapter<RVAdapter.OptionViewHolder>(), ItemTouchHelperContract {
+    class OptionViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var cv: CardView = itemView.cv
+        var rowView: View = itemView
         var questionOption: TextView = itemView.question_option
 
     }
@@ -22,17 +26,39 @@ class RVAdapter internal constructor(var options: List<Option>) : RecyclerView.A
         super.onAttachedToRecyclerView(recyclerView)
     }
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): PersonViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): OptionViewHolder {
         val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.item, viewGroup, false)
-        return PersonViewHolder(v)
+        return OptionViewHolder(v)
     }
 
-    override fun onBindViewHolder(personViewHolder: PersonViewHolder, i: Int) {
+    override fun onBindViewHolder(personViewHolder: OptionViewHolder, i: Int) {
         personViewHolder.questionOption.text = options[i].name
     }
 
     override fun getItemCount(): Int {
         return options.size
     }
+
+    override fun onRowMoved(fromPosition: Int, toPosition: Int) {
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                Collections.swap(options, i, i + 1)
+            }
+        } else {
+            for (i in fromPosition downTo toPosition + 1) {
+                Collections.swap(options, i, i - 1)
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition)
+    }
+
+    override fun onRowSelected(myViewHolder: OptionViewHolder) {
+        myViewHolder.cv.setCardBackgroundColor(Color.GRAY)
+    }
+
+    override fun onRowClear(myViewHolder: OptionViewHolder) {
+        myViewHolder.cv.setCardBackgroundColor(Color.WHITE)
+    }
+
 
 }
