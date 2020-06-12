@@ -123,9 +123,9 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                             mWebView!!.loadUrl(url)
                             Log.d("MY_TERM", "IS EXISTS")
                         } else {
-                            val masTerms = db!!.searchTerm(name)
-                            if (masTerms!!.size > 0) {
-                                for (term in masTerms) if (term!!.name.equals(name, ignoreCase = true)) bl!!.loadTerm(term)
+                            val masTerms = db.searchTerm(name)
+                            if (masTerms.size > 0) {
+                                for (term in masTerms) if (term.name.equals(name, ignoreCase = true)) bl!!.loadTerm(term)
                                 mWebView!!.loadUrl(url)
                                 showToast("Термин кэширован")
                             } else {
@@ -185,6 +185,8 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                         "   });" +
                         "}")
             }
+
+
         }
         searchTerms("")
     }
@@ -223,7 +225,8 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
             when (keyCode) {
                 KeyEvent.KEYCODE_BACK -> {
                     if (mWebView!!.canGoBack()) {
-                        mWebView!!.goBack()
+//                        mWebView!!.goBack()
+                        searchTerms("")
                     } else {
                         finish()
                     }
@@ -274,7 +277,8 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                                         "Вальтер Виктор Александрович \n" +
                                         "Евдокимова Ольга Алексеевна \n" +
                                         "Вохмин Александр Андреевич \n" +
-                                        "Тарасенко Екатерина Николаевна \n")
+                                        "Тарасенко Екатерина Николаевна \n" +
+                                        "Смирных Павел Сергеевич \n")
                         .setCancelable(false)
                         .setNegativeButton("OK"
                         ) { dialog, id -> dialog.cancel() }

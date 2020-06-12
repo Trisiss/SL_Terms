@@ -1,5 +1,6 @@
 package com.example.sl_terms
 
+import android.util.Log
 import com.example.sl_terms.models.AvailableTest
 import com.example.sl_terms.models.Option
 import com.example.sl_terms.models.Question
@@ -7,9 +8,9 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
 import org.json.JSONObject
+import java.io.IOException
 import java.lang.reflect.Type
 import java.util.*
 
@@ -28,22 +29,24 @@ class DataBaseTest {
         return strResponse
     }
 
-    fun getResponseObj(url: String): Any {
-        data class Response (val code: Int, val body: String)
-        var responseCode: Int = 200
-        var responseStr: String = ""
+    fun getResponseAsync(url: String): String {
+        var strResponse = ""
         val request = Request.Builder().url(url).build()
         try {
-            val response = client.newCall(request).execute()
-            responseCode = response.code()
-            if (response.body() != null) {
-                responseStr = response.body().toString()
-            }
+            val response = client.newCall(request).enqueue(object: Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.e("TAG", e.message, e)
+                }
 
+                override fun onResponse(call: Call, response: Response) {
+                    strResponse = response.body()?.string().toString()
+                    println("$url -- ${response.code()}")
+                }
+            })
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return Response(code = responseCode, body = responseStr)
+        return strResponse
     }
 
     //получить список доступных тестов
@@ -141,26 +144,6 @@ class DataBaseTest {
     }
 
     //получить варианты ответов на конкретный вопрос
-    fun geIdVariantVariantName(id_question: Int): Array<AvailableTest> {
-        val listTest = ArrayList<AvailableTest>()
-        try {
-            val dataJsonArr = JSONObject(getResponse(GET_ID_VARIANT_NAME_VARIANT + id_question))
-                    .getJSONArray("variants")
-            for (i in 0 until dataJsonArr.length()) {
-                val testJSON = dataJsonArr.getJSONObject(i)
-                val availabletest = AvailableTest()
-                availabletest.id = testJSON.getInt("id_variant")
-                availabletest.name = testJSON.getString("variant_name")
-                println(availabletest.id)
-                println(availabletest.name)
-                listTest.add(availabletest)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return listTest.toTypedArray()
-    }
-
     fun getOptions(id_question: Int): Array<Option> {
         var listOptions: List<Option> = listOf()
         try {

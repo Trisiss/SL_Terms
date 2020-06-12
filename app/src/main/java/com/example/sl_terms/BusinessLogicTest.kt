@@ -57,11 +57,6 @@ class BusinessLogicTest {
     fun getCurQuestionText(): kotlin.Unit {}
 
     //получить варианты ответа
-    fun getIdVariantVariantName(idQuestion:Int): Array<AvailableTest> {
-        IdVariantVariantName = dataBaseTest.geIdVariantVariantName(idQuestion)
-        return IdVariantVariantName
-    }
-
     fun getOptions(id: Int): Array<Option> = dataBaseTest.getOptions(id)
 
     //передать ответ студента на сервер

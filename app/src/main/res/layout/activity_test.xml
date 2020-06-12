@@ -7,18 +7,21 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="510dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center_vertical|center_horizontal"
         android:orientation="vertical"
         android:paddingTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="7dp">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView"
@@ -35,11 +38,13 @@
 
         <EditText
             android:id="@+id/text_answer"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minWidth="100dp"
+            android:autofillHints="Ответ на вопрос"
             android:hint="Введите ответ на вопрос"
-            android:visibility="gone"/>
+            android:inputType="text"
+            android:minWidth="100dp"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/llm"
@@ -80,9 +85,11 @@
 
             <Button
                 android:id="@+id/button2"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1"
+                android:background="@color/colorPrimary"
                 android:text="Следующий вопрос" />
 
             <Button
@@ -90,7 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/colorPrimary"
+                android:background="@android:color/darker_gray"
                 android:text="Завершить тест" />
 
         </LinearLayout>

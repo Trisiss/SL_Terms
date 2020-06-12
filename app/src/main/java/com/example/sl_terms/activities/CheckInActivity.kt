@@ -40,6 +40,7 @@ class CheckInActivity : AppCompatActivity() {
             rbn.text = availableTest[i].name
             val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
             rbn.layoutParams = params
+            if (i == 0) rbn.isChecked = true
             rgp.addView(rbn)
         }
         // blt.startTest("Тарасенко", 1);
