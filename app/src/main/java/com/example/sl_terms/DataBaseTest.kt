@@ -161,9 +161,9 @@ class DataBaseTest {
     }
 
     //отправить вариант ответа
-    fun answerToCurQuestion(id_student: Int, id_question: Int, id_variant: Int, id_session: Int) {
+    fun answerToCurQuestion(id_student: Int, id_question: Int, id_variant: Int, other_answer: String,  id_session: Int) {
         getResponse(ANSWER_TO_CUR_QUESTION + id_student + "&id_question=" + id_question + "&id_answer="
-                + id_variant + "&id_session=" + id_session)
+                + id_variant + "&other_answer=" + other_answer + "&id_session=" + id_session)
     }
 
     //

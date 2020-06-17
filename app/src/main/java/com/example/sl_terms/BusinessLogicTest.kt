@@ -60,8 +60,8 @@ class BusinessLogicTest {
     fun getOptions(id: Int): Array<Option> = dataBaseTest.getOptions(id)
 
     //передать ответ студента на сервер
-    fun answerToCurQuestion(id_student:Int, id_question:Int, id_variant:Int, id_session:Int): Unit {
-        dataBaseTest.answerToCurQuestion(id_student, id_question, id_variant, id_session)
+    fun answerToCurQuestion(id_student:Int, id_question:Int, id_variant:Int, other_answer:String, id_session:Int): Unit {
+        dataBaseTest.answerToCurQuestion(id_student, id_question, id_variant, other_answer, id_session)
     }
 
     //следующий вопрос

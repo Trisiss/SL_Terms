@@ -31,8 +31,9 @@ class RVAdapter internal constructor(var options: List<Option>) : RecyclerView.A
         return OptionViewHolder(v)
     }
 
-    override fun onBindViewHolder(personViewHolder: OptionViewHolder, i: Int) {
-        personViewHolder.questionOption.text = options[i].name
+    override fun onBindViewHolder(optionViewHolder: OptionViewHolder, i: Int) {
+        optionViewHolder.questionOption.text = options[i].name
+        optionViewHolder.cv.id = options[i].id
     }
 
     override fun getItemCount(): Int {

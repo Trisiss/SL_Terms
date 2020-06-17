@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -113,21 +114,52 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v.id) {
             R.id.button1 -> {
-                //перед закрытием теста отправить последний вопрос на сервер
-//                val rgp2 = findViewById<View>(R.id.radioGroup) as RadioGroup
-//                val countQuestion2: Int = BusinessLogicTest.blt.nextQuestion()
-                //отправляем ответ на сервер
-//                val variant2 = rgp2.checkedRadioButtonId
-//                BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, variant2, idSession)
-                val intent = Intent(this@TestActivity, ResultActivity::class.java)
-                numberCorrectAnswersS = BusinessLogicTest.blt.numberOfCorrectAnswers(idStudent, idTestStr.toInt()).toString()
-                intent.putExtra("numberCorrectAnswersS", numberCorrectAnswersS)
-                intent.putExtra("countQuestions", countQuestionsS)
-                startActivity(intent)
+                endTest()
             }
             R.id.button2 -> {
                 val rgp1 = findViewById<View>(R.id.radioGroup) as RadioGroup
                 val countQuestion: Int = BusinessLogicTest.blt.nextQuestion()
+                when (questions[countQuestion - 1].type) {
+                    0, 1 -> {
+                        //отправляем ответ на сервер
+                        val variant2 = rgp1.checkedRadioButtonId
+                        BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, variant2, "", idSession)
+                        Log.e("TAG", variant2.toString())
+                    }
+                    2 -> {
+                        val countButtons = rgp1.childCount
+                        var checkedOptions = ""
+                        for (i in 0 until countButtons) {
+                            val option = rgp1.getChildAt(i) as CheckBox
+                            if (option.isChecked) {
+                                checkedOptions += "${option.id},"
+                            }
+                        }
+                        Log.e("TAG", checkedOptions[checkedOptions.lastIndex].toString())
+                        if (checkedOptions[checkedOptions.lastIndex] == ',') checkedOptions = checkedOptions.dropLast(1)
+                        BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, rgp1.getChildAt(0).id, checkedOptions, idSession)
+                        Log.e("TAG", checkedOptions)
+                    }
+                    3 -> {
+                        val textAnswer = text_answer.text
+                        BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, options.first().id, textAnswer.toString().toUpperCase(), idSession)
+                        Log.e("TAG", textAnswer.toString())
+                    }
+                    4 -> {
+                        val resView = recycler_view
+                        val resView2 = recycler_view2
+                        val countOptions = resView.childCount
+                        var otherAnswers = ""
+                        for (i in 0 until countOptions) {
+                            val option = resView.getChildAt(i).id
+                            val option2 = resView2.getChildAt(i).id
+                            otherAnswers += "${option}:$option2,"
+                        }
+                        if (otherAnswers[otherAnswers.lastIndex] == ',') otherAnswers = otherAnswers.dropLast(1)
+                        BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, options.first().id, otherAnswers, idSession)
+                        Log.e("TAG", otherAnswers)
+                    }
+                }
                 //отправляем ответ на сервер
 //                val variant = rgp1.checkedRadioButtonId
 //                BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, variant, idSession)
@@ -216,10 +248,61 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    fun endTest() {
+        val rgp2 = findViewById<View>(R.id.radioGroup) as RadioGroup
+        val countQuestion2: Int = BusinessLogicTest.blt.nextQuestion()
+        when (questions[countQuestion2 - 1].type) {
+            0, 1 -> {
+                //отправляем ответ на сервер
+                val variant2 = rgp2.checkedRadioButtonId
+                BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, variant2, "", idSession)
+            }
+            2 -> {
+                val countButtons = rgp2.childCount
+                var checkedOptions = ""
+                for (i in 0 until countButtons) {
+                    val option = rgp2.getChildAt(i) as CheckBox
+                    if (option.isChecked) {
+                        checkedOptions += "${option.id},"
+                    }
+                }
+                if (checkedOptions[checkedOptions.lastIndex] == ',') checkedOptions = checkedOptions.dropLast(1)
+                BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, rgp2.getChildAt(0).id, checkedOptions, idSession)
+            }
+            3 -> {
+                val textAnswer = text_answer.text
+                BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, options.first().id, textAnswer.toString().toUpperCase(), idSession)
+            }
+            4 -> {
+                val resView = recycler_view
+                val resView2 = recycler_view2
+                val countOptions = resView.childCount
+                var otherAnswers = ""
+                for (i in 0 until countOptions) {
+                    val option = resView.getChildAt(i).id
+                    val option2 = resView2.getChildAt(i).id
+                    otherAnswers += "${option}:$option2,"
+                }
+                if (otherAnswers[otherAnswers.lastIndex] == ',') otherAnswers = otherAnswers.dropLast(1)
+                BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, options.first().id, otherAnswers, idSession)
+                Log.e("TAG", otherAnswers)
+            }
+        }
+
+        val intent = Intent(this@TestActivity, ResultActivity::class.java)
+        numberCorrectAnswersS = BusinessLogicTest.blt.numberOfCorrectAnswers(idStudent, idTestStr.toInt()).toString()
+        intent.putExtra("numberCorrectAnswersS", numberCorrectAnswersS)
+        intent.putExtra("countQuestions", countQuestionsS)
+        startActivity(intent)
+        finish()
+    }
+
     public override fun onStop() {
         super.onStop()
         idSession = 2
     }
+
+
 
     override fun onBackPressed() {
         AlertDialog.Builder(this)
