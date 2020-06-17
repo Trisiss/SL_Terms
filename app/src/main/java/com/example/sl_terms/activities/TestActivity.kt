@@ -302,7 +302,10 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
         idSession = 2
     }
 
-
+    override fun onResume() {
+        super.onResume()
+        if (idSession == 2) endTest()
+    }
 
     override fun onBackPressed() {
         AlertDialog.Builder(this)
