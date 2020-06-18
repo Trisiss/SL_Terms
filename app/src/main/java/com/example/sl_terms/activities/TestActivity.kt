@@ -309,14 +309,14 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onBackPressed() {
         AlertDialog.Builder(this)
-                .setMessage("Are you sure you want to exit?")
+                .setMessage("Вы действительно хотите выйти?")
                 .setCancelable(false)
-                .setPositiveButton("Yes") { dialog, id ->
+                .setPositiveButton("Да") { dialog, id ->
                     val intent = Intent(this@TestActivity, MainActivity::class.java)
                     startActivity(intent)
                     finish()
                 }
-                .setNegativeButton("No", null)
+                .setNegativeButton("Нет", null)
                 .show()
     }
 }
