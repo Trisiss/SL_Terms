@@ -86,6 +86,6 @@ class BusinessLogicTest {
     }
 
     companion object  {
-        var  blt:BusinessLogicTest = BusinessLogicTest()
+        var  businessLogicTest:BusinessLogicTest = BusinessLogicTest()
     }
 }

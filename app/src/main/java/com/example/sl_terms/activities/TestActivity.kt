@@ -44,6 +44,9 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
     private var countQuestionsS: String? = null
     private var numberCorrectAnswersS: String? = null
     private var idSession = 0
+
+    private val businessLogicTest: BusinessLogicTest = BusinessLogicTest()
+
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,13 +63,13 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
             myButton1 = findViewById<View>(R.id.button1) as Button
             myButton2 = findViewById<View>(R.id.button2) as Button
             val textView = findViewById<View>(R.id.textView) as TextView
-            ID_questions = BusinessLogicTest.blt.getIdQuestions(idTest)
-            questions = BusinessLogicTest.blt.getQuestions(idTest)
+            ID_questions = businessLogicTest.getIdQuestions(idTest)
+            questions = businessLogicTest.getQuestions(idTest)
             idPicture = questions.first().idPicture ?: 0
             val countQuestions = questions.size
             countQuestionsS = countQuestions.toString()
             textView.text = questions[0].text
-            options = BusinessLogicTest.blt.getOptions(questions[0].id)
+            options = businessLogicTest.getOptions(questions[0].id)
             val buttons = options.size
 //            val rb = arrayOfNulls<AppCompatRadioButton>(buttons)
             val rgp = findViewById<View>(R.id.radioGroup) as RadioGroup
@@ -118,12 +121,12 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
             }
             R.id.button2 -> {
                 val rgp1 = findViewById<View>(R.id.radioGroup) as RadioGroup
-                val countQuestion: Int = BusinessLogicTest.blt.nextQuestion()
+                val countQuestion: Int = businessLogicTest.nextQuestion()
                 when (questions[countQuestion - 1].type) {
                     0, 1 -> {
                         //отправляем ответ на сервер
                         val variant2 = rgp1.checkedRadioButtonId
-                        BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, variant2, "", idSession)
+                        businessLogicTest.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, variant2, "", idSession)
                         Log.e("TAG", variant2.toString())
                     }
                     2 -> {
@@ -137,12 +140,12 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
                         }
                         Log.e("TAG", checkedOptions[checkedOptions.lastIndex].toString())
                         if (checkedOptions[checkedOptions.lastIndex] == ',') checkedOptions = checkedOptions.dropLast(1)
-                        BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, rgp1.getChildAt(0).id, checkedOptions, idSession)
+                        businessLogicTest.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, rgp1.getChildAt(0).id, checkedOptions, idSession)
                         Log.e("TAG", checkedOptions)
                     }
                     3 -> {
                         val textAnswer = text_answer.text
-                        BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, options.first().id, textAnswer.toString().toUpperCase(), idSession)
+                        businessLogicTest.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, options.first().id, textAnswer.toString().toUpperCase(), idSession)
                         Log.e("TAG", textAnswer.toString())
                     }
                     4 -> {
@@ -156,7 +159,7 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
                             otherAnswers += "${option}:$option2,"
                         }
                         if (otherAnswers[otherAnswers.lastIndex] == ',') otherAnswers = otherAnswers.dropLast(1)
-                        BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, options.first().id, otherAnswers, idSession)
+                        businessLogicTest.answerToCurQuestion(idStudent, questions[countQuestion - 1].id, options.first().id, otherAnswers, idSession)
                         Log.e("TAG", otherAnswers)
                     }
                 }
@@ -166,7 +169,7 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
                 //если номер вопроса равен количеству вопросов, открыть активити с результатами
                 if (countQuestion == questions.size) {
                     val intent2 = Intent(this@TestActivity, ResultActivity::class.java)
-                    numberCorrectAnswersS = BusinessLogicTest.blt.numberOfCorrectAnswers(id_student = idStudent, idTest = idTestStr.toInt()).toString()
+                    numberCorrectAnswersS = BusinessLogicTest.businessLogicTest.numberOfCorrectAnswers(id_student = idStudent, idTest = idTestStr.toInt()).toString()
                     intent2.putExtra("numberCorrectAnswersS", numberCorrectAnswersS)
                     intent2.putExtra("countQuestions", countQuestionsS)
                     startActivity(intent2)
@@ -177,13 +180,13 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
                 layout.visibility = LinearLayout.GONE
                 editText.visibility = EditText.GONE
                 //переходим к следующему вопросу
-                options = BusinessLogicTest.blt.getOptions(questions[countQuestion].id)
+                options = BusinessLogicTest.businessLogicTest.getOptions(questions[countQuestion].id)
                 val textView = findViewById<View>(R.id.textView) as TextView
                 //проверка есть ли рисунок
-                Picture_null = BusinessLogicTest.blt.getPictureNull(questions[countQuestion].id)
+                Picture_null = BusinessLogicTest.businessLogicTest.getPictureNull(questions[countQuestion].id)
 //                val result = Picture_null[0].id.toString()
                 //если рисунок есть то
-                Picture = BusinessLogicTest.blt.getPicture(questions[countQuestion].id)
+                Picture = BusinessLogicTest.businessLogicTest.getPicture(questions[countQuestion].id)
                 val imageView = findViewById<View>(R.id.imageView) as ImageView
                 imageView.setImageBitmap(null)
                 imageView.destroyDrawingCache()
@@ -250,12 +253,12 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
 
     fun endTest() {
         val rgp2 = findViewById<View>(R.id.radioGroup) as RadioGroup
-        val countQuestion2: Int = BusinessLogicTest.blt.nextQuestion()
+        val countQuestion2: Int = businessLogicTest.nextQuestion()
         when (questions[countQuestion2 - 1].type) {
             0, 1 -> {
                 //отправляем ответ на сервер
                 val variant2 = rgp2.checkedRadioButtonId
-                BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, variant2, "", idSession)
+                businessLogicTest.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, variant2, "", idSession)
             }
             2 -> {
                 val countButtons = rgp2.childCount
@@ -267,11 +270,11 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }
                 if (checkedOptions[checkedOptions.lastIndex] == ',') checkedOptions = checkedOptions.dropLast(1)
-                BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, rgp2.getChildAt(0).id, checkedOptions, idSession)
+                businessLogicTest.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, rgp2.getChildAt(0).id, checkedOptions, idSession)
             }
             3 -> {
                 val textAnswer = text_answer.text
-                BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, options.first().id, textAnswer.toString().toUpperCase(), idSession)
+                businessLogicTest.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, options.first().id, textAnswer.toString().toUpperCase(), idSession)
             }
             4 -> {
                 val resView = recycler_view
@@ -284,13 +287,13 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
                     otherAnswers += "${option}:$option2,"
                 }
                 if (otherAnswers[otherAnswers.lastIndex] == ',') otherAnswers = otherAnswers.dropLast(1)
-                BusinessLogicTest.blt.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, options.first().id, otherAnswers, idSession)
+                businessLogicTest.answerToCurQuestion(idStudent, questions[countQuestion2 - 1].id, options.first().id, otherAnswers, idSession)
                 Log.e("TAG", otherAnswers)
             }
         }
 
         val intent = Intent(this@TestActivity, ResultActivity::class.java)
-        numberCorrectAnswersS = BusinessLogicTest.blt.numberOfCorrectAnswers(idStudent, idTestStr.toInt()).toString()
+        numberCorrectAnswersS = BusinessLogicTest.businessLogicTest.numberOfCorrectAnswers(idStudent, idTestStr.toInt()).toString()
         intent.putExtra("numberCorrectAnswersS", numberCorrectAnswersS)
         intent.putExtra("countQuestions", countQuestionsS)
         startActivity(intent)

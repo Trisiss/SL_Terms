@@ -23,7 +23,7 @@ class CheckInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check_in)
-        availableTest = BusinessLogicTest.blt.availableTest
+        availableTest = BusinessLogicTest.businessLogicTest.availableTest
         val buttons = availableTest.size
         if (buttons == 0) {
             val toast = Toast.makeText(applicationContext,
@@ -57,7 +57,7 @@ class CheckInActivity : AppCompatActivity() {
             var selectedId = 0
             selectedId = rgp1.checkedRadioButtonId
             val numberAsString = selectedId.toString()
-            val idStudent: Int? = BusinessLogicTest.blt.startTest(selectUser)
+            val idStudent: Int? = BusinessLogicTest.businessLogicTest.startTest(selectUser)
             val idStudentStr = idStudent.toString()
             rbn1 = findViewById<View>(selectedId) as RadioButton
             val intent = Intent(this@CheckInActivity, TestActivity::class.java)
