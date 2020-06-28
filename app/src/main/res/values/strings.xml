@@ -9,7 +9,7 @@
     <string name="answerOne">answerOne</string>
     <string name="question">question</string>
     <string name="action_test" type="id">Пройти тест</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Вход</string>
 
     <!-- Strings related to login -->
     <string name="prompt_select_user">ФИО</string>
