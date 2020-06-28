@@ -94,13 +94,31 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
             if (questions.first().type == 4) {
                 val layout = llm
 //                layout.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 350)
-                layout.visibility = LinearLayout.VISIBLE
                 rv = recycler_view
                 rv2 = recycler_view2
                 val llm = LinearLayoutManager(this)
                 val llm2 = LinearLayoutManager(this)
                 rv.layoutManager = llm
                 rv2.layoutManager = llm2
+                val optionLeft = mutableListOf<Option>()
+                val optionRight = mutableListOf<Option>()
+
+                for (i in 0 until options.size) {
+                    if (options[i].type == 1) optionRight.add(options[i])
+                    if (options[i].type == 0) optionLeft.add(options[i])
+                }
+
+                val adapterLeft = RVAdapter(options = optionLeft)
+                val adapterRight = RVAdapter(options = optionRight)
+                val callback: ItemTouchHelper.Callback = ItemMoveCallback(adapterLeft)
+                val callback2: ItemTouchHelper.Callback = ItemMoveCallback(adapterRight)
+                val touchHelper = ItemTouchHelper(callback)
+                val touchHelper2 = ItemTouchHelper(callback2)
+                touchHelper.attachToRecyclerView(recycler_view)
+                touchHelper2.attachToRecyclerView(recycler_view2)
+                rv.adapter = adapterLeft
+                rv2.adapter = adapterRight
+                layout.visibility = LinearLayout.VISIBLE
 
             }
             myButton1!!.setOnClickListener(this)
@@ -226,12 +244,12 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
                     val llm2 = LinearLayoutManager(this)
                     rv.layoutManager = llm
                     rv2.layoutManager = llm2
-                    var optionLeft = mutableListOf<Option>()
-                    var optionRight = mutableListOf<Option>()
+                    val optionLeft = mutableListOf<Option>()
+                    val optionRight = mutableListOf<Option>()
 
                     for (i in 0 until options.size) {
-                        if (i >= (options.size / 2)) optionRight.add(options[i])
-                        if (i < (options.size / 2)) optionLeft.add(options[i])
+                        if (options[i].type == 1) optionRight.add(options[i])
+                        if (options[i].type == 0) optionLeft.add(options[i])
                     }
 
                     val adapterLeft = RVAdapter(options = optionLeft)

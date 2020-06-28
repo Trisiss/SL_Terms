@@ -5,5 +5,6 @@ package com.example.sl_terms.models
  */
 data class Option (
         val id: Int,
-        val name: String
+        val name: String,
+        val type: Int
 )
