@@ -1,10 +1,13 @@
 package com.example.sl_terms.activities
 
 import android.content.Intent
+import android.graphics.Color.red
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.sl_terms.R
 import kotlinx.android.synthetic.main.activity_result.*
+import kotlin.math.roundToInt
 
 class ResultActivity : AppCompatActivity() {
 
@@ -16,9 +19,14 @@ class ResultActivity : AppCompatActivity() {
         var countQuestionsS = " "
         countQuestionsS = intent.getStringExtra("countQuestions")
         //   int id_student = Integer.parseInt(id_studentS);
-        val textView = textView6
+        val quantityAnswer = txtQuantityAnswer
+        val quantityValue = txtQuantityValue
         //   String result = Integer.toString(blt.numberOfCorrectAnswers(id_student));
-        textView.text = "$numberCorrectAnswersS/$countQuestionsS"
+        quantityAnswer.text = "$numberCorrectAnswersS из $countQuestionsS"
+        val value: Float = (numberCorrectAnswersS.toFloat() * 100) / countQuestionsS.toFloat()
+        quantityValue.text = value.roundToInt().toString()
+        if (value < 25) quantityValue.setTextColor(ContextCompat.getColor(this, R.color.colorRed))
+        if (value >= 25) quantityValue.setTextColor(ContextCompat.getColor(this, R.color.colorGreen))
     }
 
     override fun onBackPressed() {
